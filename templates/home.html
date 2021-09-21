@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>二叉树B站抽奖站点</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/a251231/mass@main/panel/js/skel.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/a251231/mass@main/panel/css/other.css?66886666">
+    <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/a251231/mass@main/panel/css/sweetalert.css">
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/a251231/mass@main/panel/js/sweetalert-dev.js"></script>
+</head>
+
+<body class="landing">
+ <script type="text/javascript" color="255,255,255" opacity='0.7' zIndex="auto" count="200" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+    <div id="page-wrapper">
+
+        <section id="banner">
+            <div class="inner">
+                <h2>二叉树B站抽奖站点</h2>
+                <ul class="actions">
+                <div>
+		    <img id="qrcode" height="170em" src="./error.jpg"/>
+                    <br /><li><a class="button" onclick="SaveQrCode()" title="保存CK">保存CK</a>
+		</div>
+		    <li><a class="button" onclick="GetQrCode()" title="注意事项">注意事项</a>
+	            <li><a class="button" onclick="window.open('https://jq.qq.com/?_wv=1027&k=bdTVzEXQ')" title="联系站长">联系站长</a>
+	            <li><a class="button" onclick="window.open('https://git.spiritlhl.workers.dev/spiritLHL/Hang-up-items')" title="项目推荐">项目推荐</a>
+                    </li>
+                </ul>
+                <p>
+                    <br /><a style="font-size:15px;">本站点前后端由spiritlhl开发，感谢shanmite开发并维护的抽奖脚本</a>
+                    <br /><a>脚本仓库链接：</a> <a style="font-size:15px;" href="https://github.com/shanmiteko/LotteryAutoScript">LotteryAutoScript</a>
+                </p>
+
+                <div class="more">
+                    <br />欢迎使用
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+<script>
+    var qrcode = document.getElementById("qrcode")
+    var httpRequest;
+    var success = "https://ghproxy.com/https://raw.githubusercontent.com/cdle/jd_study/main/xdd/static/ok.svg";
+  function GetQrCode() {
+      if (window.XMLHttpRequest) {
+          httpRequest = new XMLHttpRequest();
+      } else if (window.ActiveXObject) {
+          httpRequest = new ActiveXObject();
+      }
+      httpRequest.open("GET", "http://127.0.0.1:8000/b/readme", true);
+      httpRequest.send();
+      httpRequest.onreadystatechange = function () {
+          if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+              var json = httpRequest.responseText;
+              text = json.replace("\"", "").replace("\"", "").replace("\"", "").replace("\"", "");
+              swal("随缘挂", text, "success")
+              console.log(json);
+          }
+      }
+  };
+  function SaveQrCode() {
+      if(window.XMLHttpRequest) {
+                httpRequest = new XMLHttpRequest();
+            }else if(window.ActiveXObject) {
+                httpRequest = new ActiveXObject();
+            }
+            httpRequest.open("GET", "http://127.0.0.1:8000/b/login/sucess", true);
+            httpRequest.send();
+            httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var json = httpRequest.responseText;
+                retext = json.replace("\"","").replace("\"","");
+                swal("录入CK", retext,"success")
+                console.log(json);
+            }
+            }
+  };
+    if(window.XMLHttpRequest) {
+                httpRequest = new XMLHttpRequest();
+            }else if(window.ActiveXObject) {
+                httpRequest = new ActiveXObject();
+            };
+            httpRequest.open("GET", "http://127.0.0.1:8000/b/login", true);
+            httpRequest.send();
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                    var json = httpRequest.responseText;
+                    qrcode.src = json.replace("\"", "").replace("\"", "");
+                    console.log(json);
+                }
+            };
+</script>
+
+</html>
