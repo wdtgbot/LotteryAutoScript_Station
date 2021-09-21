@@ -12,6 +12,7 @@
     <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/a251231/mass@main/panel/css/sweetalert.css">
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/a251231/mass@main/panel/js/sweetalert-dev.js"></script>
+    <style>input { background: #dcc4c4;}</style>
 </head>
 
 <body class="landing">
@@ -24,11 +25,14 @@
                 <ul class="actions">
                 <div>
 		    <img id="qrcode" height="170em" src="./error.jpg"/>
-                    <br /><li><a class="button" onclick="SaveQrCode()" title="保存CK">保存CK</a>
+                    <form>
+                            <input type="text" id="email" value="" placeholder="邮件通知地址(必填)" style="font-size:15px;"><br>
+                    </form>
+                    <br /><a class="button" onclick="SaveQrCode()" title="保存CK">保存CK</a>
 		</div>
-		    <li><a class="button" onclick="GetQrCode()" title="注意事项">注意事项</a>
-	            <li><a class="button" onclick="window.open('https://jq.qq.com/?_wv=1027&k=bdTVzEXQ')" title="联系站长">联系站长</a>
-	            <li><a class="button" onclick="window.open('https://git.spiritlhl.workers.dev/spiritLHL/Hang-up-items')" title="项目推荐">项目推荐</a>
+		    <a class="button" onclick="GetQrCode()" title="注意事项">注意事项</a>
+	            <a class="button" onclick="window.open('https://jq.qq.com/?_wv=1027&k=bdTVzEXQ')" title="联系站长">联系站长</a>
+	            <a class="button" onclick="window.open('https://git.spiritlhl.workers.dev/spiritLHL/Hang-up-items')" title="项目推荐">项目推荐</a>
                     </li>
                 </ul>
                 <p>
@@ -47,6 +51,7 @@
     var qrcode = document.getElementById("qrcode")
     var httpRequest;
     var success = "https://ghproxy.com/https://raw.githubusercontent.com/cdle/jd_study/main/xdd/static/ok.svg";
+    var email = document.getElementById('email').value;
   function GetQrCode() {
       if (window.XMLHttpRequest) {
           httpRequest = new XMLHttpRequest();
@@ -70,7 +75,9 @@
             }else if(window.ActiveXObject) {
                 httpRequest = new ActiveXObject();
             }
-            httpRequest.open("GET", "http://127.0.0.1:8000/b/login/sucess", true);
+            console.log(email)
+            //var temp = "http://127.0.0.1:8000/b/login/sucess/"+email;
+            httpRequest.open("GET", temp, true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState == 4 && httpRequest.status == 200) {

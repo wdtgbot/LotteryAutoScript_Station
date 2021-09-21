@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 import uvicorn
-from fastapi.staticfiles import StaticFiles
 from main import application
 
 
@@ -12,8 +11,6 @@ app = FastAPI(
     docs_url='/docs',
     redoc_url='/redocs',
 )
-
-#app.mount(path='/static', app=StaticFiles(directory='./static'), name='static')
 
 
 app.include_router(application, prefix='/b', tags=['Bilibili二叉树抽奖站点'])

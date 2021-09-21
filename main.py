@@ -1,7 +1,7 @@
-from fastapi import APIRouter, BackgroundTasks, Request
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-import qrcode, base64, requests, os
+import qrcode, base64, requests, os, re
 from fake_useragent import UserAgent
 from threading import Thread
 from io import BytesIO
@@ -10,9 +10,25 @@ from PIL import Image
 from typing import List
 
 
+from Bilibili import schemas, process
+from Bilibili.database import engine, Base, SessionLocal
+
+Base.metadata.create_all(bind=engine)
+
+
+application = APIRouter()
+
+
+templates = Jinja2Templates(directory='./templates')
+
+application.mount("/static", StaticFiles(directory="./static"), name="static")
+
+
 requests.packages.urllib3.disable_warnings()
+
+
 status_qr = 0
-session = requests.session()
+Session = requests.session()
 ua = UserAgent(path='ua.json')
 user_agent = ua.chrome
 headers = {'User-Agent': user_agent, 'Referer': "https://www.bilibili.com/"}
@@ -29,25 +45,18 @@ class showpng(Thread):
         img.show()
 
 
-def islogin(session):
+def islogin(Session):
     try:
-        session.cookies.load(ignore_discard=True)
+        Session.cookies.load(ignore_discard=True)
     except Exception:
         pass
-    loginurl = session.get("https://api.bilibili.com/x/web-interface/nav", verify=False, headers=headers).json()
+    loginurl = Session.get("https://api.bilibili.com/x/web-interface/nav", verify=False, headers=headers).json()
     if loginurl['code'] == 0:
         print('Cookies值有效，',loginurl['data']['uname'],'，已登录！')
-        return session, True
+        return Session, True
     else:
         print('Cookies值已经失效，请重新扫码登录！')
-        return session, False
-
-application = APIRouter()
-
-
-templates = Jinja2Templates(directory='./templates')
-
-application.mount("/static", StaticFiles(directory="./static"), name="static")
+        return Session, False
 
 @application.get("/")
 def home(request: Request):
@@ -60,15 +69,15 @@ def home(request: Request):
 
 @application.get("/login")
 def login():
-    global oauthKey,session,status_qr
+    global oauthKey,Session,status_qr
     if not os.path.exists('cookies.txt'):
         with open("cookies.txt", 'w') as f:
             f.write("")
-    session = requests.session()
-    session.cookies = cookielib.LWPCookieJar(filename='bzcookies.txt')
-    session, status = islogin(session)
+    Session = requests.session()
+    Session.cookies = cookielib.LWPCookieJar(filename='bzcookies.txt')
+    Session, status = islogin(Session)
     if not status:
-        getlogin = session.get('https://passport.bilibili.com/qrcode/getLoginUrl', headers=headers).json()
+        getlogin = Session.get('https://passport.bilibili.com/qrcode/getLoginUrl', headers=headers).json()
         loginurl = requests.get(getlogin['data']['url'], headers=headers).url
         oauthKey = getlogin['data']['oauthKey']
         qr = qrcode.QRCode()
@@ -83,10 +92,10 @@ def login():
         status_qr = 1
         return text
 
-def save_ck():
+def save_ck(text):
     try:
         tokenurl = 'https://passport.bilibili.com/qrcode/getLoginInfo'
-        qrcodedata = session.post(tokenurl, data={'oauthKey': oauthKey, 'gourl': 'https://www.bilibili.com/'},
+        qrcodedata = Session.post(tokenurl, data={'oauthKey': oauthKey, 'gourl': 'https://www.bilibili.com/'},
                                   headers=headerss).json()
         if '-4' in str(qrcodedata['data']):
             return '二维码未失效，请扫码！'
@@ -95,31 +104,72 @@ def save_ck():
         elif '-2' in str(qrcodedata['data']):
             return '二维码已失效，请重新运行！'
         elif 'True' in str(qrcodedata['status']):
-            session.get(qrcodedata['data']['url'], headers=headers)
-            with open('bilcookies.txt', 'a') as fp:
-                fp.write(str(qrcodedata['data']['url'][42:-39])+'\n')
-            return '已确认，登入成功！录入成功！'
+            Session.get(qrcodedata['data']['url'], headers=headers)
+            #with open('bilcookies.txt', 'a') as fp:
+            #    fp.write(str(qrcodedata['data']['url'][42:-39])+'\n')
+            txt = str(qrcodedata['data']['url'][42:-39])
+            DedeUserID = txt.split('&')[0]
+            SESSDATA = txt.split('&')[3]
+            bili_jct = txt.split('&')[4]
+            text["DedeUserID"] = DedeUserID
+            text["SESSDATA"] = SESSDATA
+            text["bili_jct"] = bili_jct
+            return text
         else:
             return '未知错误'
     except:
         return '未知错误, 录入失败, 大概率未扫码或扫码失败'
-'''
-@application.get('/login/sucess')
-async def login_sucess(background_tasks: BackgroundTasks):
-    text = background_tasks.add_task(save_ck)
-    return text
-'''
 
-@application.get('/login/sucess')
-async def login_sucess():
-    text = save_ck()
-    return text
+@application.get('/login/sucess/{email}')
+async def login_sucess(email: str):
+    text = {
+  "DedeUserID": "string",
+  "SESSDATA": "string",
+  "bili_jct": "string",
+  "email": "string"
+}
+    text = save_ck(text)
+    if type(text) == type(dict()):
+        text["email"] = email
+        print(text)
+        requests.post('http://127.0.0.1:8000/b/create_user', data=text)
+        return '录入成功'
+    else:
+        return text
 
 @application.get('/readme')
 async def readme():
     text = "使用说明：1.二维码加载失败或二维码失效请刷新页面更新;  2.请勿在未扫码成功时点击保存ck，否则系统无法录入ck;  3.保存ck如若见到录入失败，只能刷新页面再次扫码保存，二维码不会动态加载;  4.暂时没做好配置界面，默认只转已关注的up的动态。"
     return text
 
-@application.post('/setting/data')
-async def set(data: List):
-    return data
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@application.post("/create_user", response_model=schemas.Readuser)
+def create_user(user: schemas.Createuser, db: Session = Depends(get_db)):
+    db_user = process.get_user_by_name(db, DedeUserID=user.DedeUserID)
+    if db_user:
+        raise HTTPException(status_code=400, detail="user already registered")
+    return process.create_user(db=db, user=user)
+
+
+@application.get("/get_user/{DedeUserID}", response_model=schemas.Readuser)
+def get_user(DedeUserID: str, db: Session = Depends(get_db)):
+    db_user = process.get_user_by_name(db, DedeUserID=DedeUserID)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="user not found")
+    return db_user
+
+@application.get("/get_users/{admin}", response_model=List[schemas.Readuser])
+def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    if admin == "spiritlhl":
+        users = process.get_users(db, skip=skip, limit=limit)
+        return users
+    else:
+        return
