@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-import qrcode, base64, requests, os, re
+import qrcode, base64, requests, os
 from fake_useragent import UserAgent
 from threading import Thread
 from io import BytesIO
@@ -118,7 +118,13 @@ def save_ck(text):
         else:
             return '未知错误'
     except:
-        return '未知错误, 录入失败, 大概率未扫码或扫码失败'
+        return '未知错误, 录入失败, 大概率未扫码或扫码失败，也有可能是请求频繁了'
+
+def post_ck(text):
+    headers = {'Content-Type': 'application/json'}
+    r = requests.request('post', 'http://127.0.0.1:8000/b/create_user/', json=text, headers=headers)
+    print(r)
+    return True
 
 @application.get('/login/sucess/{email}')
 async def login_sucess(email: str):
@@ -131,9 +137,9 @@ async def login_sucess(email: str):
     text = save_ck(text)
     if type(text) == type(dict()):
         text["email"] = email
-        print(text)
-        requests.post('http://127.0.0.1:8000/b/create_user', data=text)
-        return '录入成功'
+        text = {'DedeUserID': 'DedeUserID=11573578', 'SESSDATA': 'SESSDATA=f55b0c9e%2C1647783995%2C2e722%2A91', 'bili_jct': 'bili_jct=a04f467d895d9b55cf0ae0407d7fb6bf', 'email': 'xxxxxx'}
+        post_ck(dict(text))
+        return text
     else:
         return text
 
@@ -173,3 +179,16 @@ def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends
         return users
     else:
         return
+
+
+
+#
+#git add -A
+#git commit -m "xxxx"
+#git push -f origin master
+
+'''
+<form>
+                            <input type="text" id="email" value="" placeholder="邮件通知地址(必填)" style="font-size:15px;"><br>
+                    </form>
+'''

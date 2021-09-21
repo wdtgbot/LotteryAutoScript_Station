@@ -25,9 +25,6 @@
                 <ul class="actions">
                 <div>
 		    <img id="qrcode" height="170em" src="./error.jpg"/>
-                    <form>
-                            <input type="text" id="email" value="" placeholder="邮件通知地址(必填)" style="font-size:15px;"><br>
-                    </form>
                     <br /><a class="button" onclick="SaveQrCode()" title="保存CK">保存CK</a>
 		</div>
 		    <a class="button" onclick="GetQrCode()" title="注意事项">注意事项</a>
@@ -51,7 +48,7 @@
     var qrcode = document.getElementById("qrcode")
     var httpRequest;
     var success = "https://ghproxy.com/https://raw.githubusercontent.com/cdle/jd_study/main/xdd/static/ok.svg";
-    var email = document.getElementById('email').value;
+    var email = prompt("请输入您的邮箱，方便失效推送"); // 输入框
   function GetQrCode() {
       if (window.XMLHttpRequest) {
           httpRequest = new XMLHttpRequest();
@@ -75,16 +72,19 @@
             }else if(window.ActiveXObject) {
                 httpRequest = new ActiveXObject();
             }
-            console.log(email)
-            //var temp = "http://127.0.0.1:8000/b/login/sucess/"+email;
+            var temp = "http://127.0.0.1:8000/b/login/sucess/"+email.replace("\"","").replace("\"","");
             httpRequest.open("GET", temp, true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
-            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-                var json = httpRequest.responseText;
-                retext = json.replace("\"","").replace("\"","");
-                swal("录入CK", retext,"success")
-                console.log(json);
+            if (httpRequest.status == 200) {
+                var text_r = httpRequest.responseText;
+                retext = text_r;
+                if (retext.replace("\"","").replace("\"","").substring(0,1) == "{"){
+                    swal("录入CK", "OK","success");
+                }else{
+                    swal("录入CK", retext,"success")
+                };
+
             }
             }
   };
