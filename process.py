@@ -21,3 +21,10 @@ def create_user(db: Session, user: schemas.Createuser):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def create_user_by_code(db: Session, user):
+    db_user = models.user(**user)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

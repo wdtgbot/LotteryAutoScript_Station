@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -9,7 +11,7 @@ import http.cookiejar as cookielib
 from PIL import Image
 from typing import List
 
-
+import Bilibili.models
 from Bilibili import schemas, process
 from Bilibili.database import engine, Base, SessionLocal
 
@@ -120,29 +122,6 @@ def save_ck(text):
     except:
         return '未知错误, 录入失败, 大概率未扫码或扫码失败，也有可能是请求频繁了'
 
-def post_ck(text):
-    headers = {'Content-Type': 'application/json'}
-    r = requests.request('post', 'http://127.0.0.1:8000/b/create_user/', json=text, headers=headers)
-    print(r)
-    return True
-
-@application.get('/login/sucess/{email}')
-async def login_sucess(email: str):
-    text = {
-  "DedeUserID": "string",
-  "SESSDATA": "string",
-  "bili_jct": "string",
-  "email": "string"
-}
-    text = save_ck(text)
-    if type(text) == type(dict()):
-        text["email"] = email
-        text = {'DedeUserID': 'DedeUserID=11573578', 'SESSDATA': 'SESSDATA=f55b0c9e%2C1647783995%2C2e722%2A91', 'bili_jct': 'bili_jct=a04f467d895d9b55cf0ae0407d7fb6bf', 'email': 'xxxxxx'}
-        post_ck(dict(text))
-        return text
-    else:
-        return text
-
 @application.get('/readme')
 async def readme():
     text = "使用说明：1.二维码加载失败或二维码失效请刷新页面更新;  2.请勿在未扫码成功时点击保存ck，否则系统无法录入ck;  3.保存ck如若见到录入失败，只能刷新页面再次扫码保存，二维码不会动态加载;  4.暂时没做好配置界面，默认只转已关注的up的动态。"
@@ -155,6 +134,21 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@application.get('/login/sucess/{email}')
+async def login_sucess(email: str, db: Session = Depends(get_db)):
+    text = {
+  "DedeUserID": "string",
+  "SESSDATA": "string",
+  "bili_jct": "string",
+  "email": "string"
+            }
+    text = save_ck(text)
+    if type(text) == type(dict()):
+        text["email"] = email
+        return process.create_user_by_code(db=db, user=text)
+    else:
+        return text
 
 
 @application.post("/create_user", response_model=schemas.Readuser)

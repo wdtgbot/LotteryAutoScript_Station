@@ -62,7 +62,6 @@
               var json = httpRequest.responseText;
               text = json.replace("\"", "").replace("\"", "").replace("\"", "").replace("\"", "");
               swal("随缘挂", text, "success")
-              console.log(json);
           }
       }
   };
@@ -80,9 +79,9 @@
                 var text_r = httpRequest.responseText;
                 retext = text_r;
                 if (retext.replace("\"","").replace("\"","").substring(0,1) == "{"){
-                    swal("录入CK", "OK","success");
+                    swal("录入CK", "录入成功","success");
                 }else{
-                    swal("录入CK", retext,"success")
+                    swal("录入CK", retext.replace("\"","").replace("\"",""),"success")
                 };
 
             }
@@ -99,7 +98,6 @@
                 if (httpRequest.readyState == 4 && httpRequest.status == 200) {
                     var json = httpRequest.responseText;
                     qrcode.src = json.replace("\"", "").replace("\"", "");
-                    console.log(json);
                 }
             };
 </script>
