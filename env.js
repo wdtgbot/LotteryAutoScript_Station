@@ -41,6 +41,11 @@ const account_parm = {
 const multiple_account_parm = [
 
 {COOKIE: "DedeUserID=11573578;SESSDATA=346cf7d0%2C1647917761%2C6573b%2A91;bili_jct=5f24ef25acca9c0582ffae7b82ec4748;",NUMBER: 1,CLEAR: true,WAIT: 60 * 1000,},
+{COOKIE: "DedeUserID=11573578;SESSDATA=346cf7d0%2C1647917761%2C6573b%2A91;bili_jct=5f24ef25acca9c0582ffae7b82ec4748;",NUMBER: 1,CLEAR: true,WAIT: 60 * 1000,},
+{COOKIE: "DedeUserID=11573578;SESSDATA=346cf7d0%2C1647917761%2C6573b%2A91;bili_jct=5f24ef25acca9c0582ffae7b82ec4748;",NUMBER: 1,CLEAR: true,WAIT: 60 * 1000,},
+{COOKIE: "DedeUserID=11573578;SESSDATA=346cf7d0%2C1647917761%2C6573b%2A91;bili_jct=5f24ef25acca9c0582ffae7b82ec4748;",NUMBER: 1,CLEAR: true,WAIT: 60 * 1000,},
+
+
 ]
 
 /**
@@ -62,7 +67,7 @@ const push_parm = {
     QYWX_KEY: "",
     IGOT_PUSH_KEY: "",
     PUSH_PLUS_TOKEN: "",
-    PUSH_PLUS_USER: "",
+    PUSH_PLUS_USER: "1313",
     SMTP_HOST: "",
     SMTP_PORT: "",
     SMTP_USER: "",

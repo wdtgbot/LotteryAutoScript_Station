@@ -12,7 +12,7 @@ class Createuser(BaseModel):
     DedeUserID: str
     SESSDATA: str
     bili_jct: str
-    email: str
+    #email: str
 
 
 class ReadData(CreateData):

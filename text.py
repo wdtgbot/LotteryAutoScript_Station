@@ -1,5 +1,5 @@
 import json, requests,os
-from Bilibili import schemas, process
+from Bilibili import schemas, curd
 import Bilibili.schemas
 from pydantic import BaseModel
 
@@ -24,6 +24,8 @@ text = {'DedeUserID': 'DedeUserID=11573578', 'SESSDATA': 'SESSDATA=1b52aa9a%2C16
 from Bilibili import models
 print(models.user(**text))
 '''
+
+'''
 r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl?skip=0&limit=100')
 ct = 0
 for i in r.json():
@@ -40,3 +42,17 @@ for i in r.json():
     with open('env.js', 'w', encoding='utf-8') as fp:
         fp.write(s)
         fp.close()
+'''
+
+with open('env.js', 'r', encoding='utf-8') as fp:
+    lines = []
+    for line in fp:
+        lines.append(line)
+    fp.close()
+cct = 42
+for j in lines[42:]:
+    if j == ']\n':
+        cct += 1
+        print(cct)
+    else:
+        cct+=1

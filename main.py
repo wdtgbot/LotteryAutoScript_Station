@@ -12,7 +12,7 @@ from PIL import Image
 from typing import List
 
 import Bilibili.models
-from Bilibili import schemas, process
+from Bilibili import schemas, curd
 from Bilibili.database import engine, Base, SessionLocal
 
 Base.metadata.create_all(bind=engine)
@@ -104,7 +104,7 @@ def save_ck(text):
         elif '-5' in str(qrcodedata['data']):
             return '已扫码，请确认！'
         elif '-2' in str(qrcodedata['data']):
-            return '二维码已失效，请重新运行！'
+            return '二维码已失效，请刷新页面再扫码！'
         elif 'True' in str(qrcodedata['status']):
             Session.get(qrcodedata['data']['url'], headers=headers)
             #with open('bilcookies.txt', 'a') as fp:
@@ -135,18 +135,18 @@ def get_db():
     finally:
         db.close()
 
-@application.get('/login/sucess/{email}')
-async def login_sucess(email: str, db: Session = Depends(get_db)):
+@application.get('/login/sucess/') # {email}
+async def login_sucess(db: Session = Depends(get_db)): # email: str,
     text = {
   "DedeUserID": "string",
   "SESSDATA": "string",
   "bili_jct": "string",
-  "email": "string"
+  #"email": "string"
             }
     text = save_ck(text)
     if type(text) == type(dict()):
-        text["email"] = email
-        process.create_user_by_code(db=db, user=text)
+        #text["email"] = email
+        curd.create_user_by_code(db=db, user=text)
         r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl?skip=0&limit=100')
         ct = 0
         for i in r.json():
@@ -159,7 +159,7 @@ async def login_sucess(email: str, db: Session = Depends(get_db)):
                 for line in fp:
                     lines.append(line)
                 fp.close()
-                lines.insert(42, '{}\n'.format(t))  # 在第二行插入
+                lines.insert(42, '{}\n'.format(t))  # 插入
                 s = ''.join(lines)
             with open('env.js', 'w', encoding='utf-8') as fp:
                 fp.write(s)
@@ -171,15 +171,15 @@ async def login_sucess(email: str, db: Session = Depends(get_db)):
 
 @application.post("/create_user", response_model=schemas.Readuser)
 def create_user(user: schemas.Createuser, db: Session = Depends(get_db)):
-    db_user = process.get_user_by_name(db, DedeUserID=user.DedeUserID)
+    db_user = curd.get_user_by_name(db, DedeUserID=user.DedeUserID)
     if db_user:
         raise HTTPException(status_code=400, detail="user already registered")
-    return process.create_user(db=db, user=user)
+    return curd.create_user(db=db, user=user)
 
 
 @application.get("/get_user/{DedeUserID}", response_model=schemas.Readuser)
 def get_user(DedeUserID: str, db: Session = Depends(get_db)):
-    db_user = process.get_user_by_name(db, DedeUserID=DedeUserID)
+    db_user = curd.get_user_by_name(db, DedeUserID=DedeUserID)
     if db_user is None:
         raise HTTPException(status_code=404, detail="user not found")
     return db_user
@@ -187,7 +187,7 @@ def get_user(DedeUserID: str, db: Session = Depends(get_db)):
 @application.get("/get_users/{admin}", response_model=List[schemas.Readuser])
 def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     if admin == "spiritlhl":
-        users = process.get_users(db, skip=skip, limit=limit)
+        users = curd.get_users(db, skip=skip, limit=limit)
         return users
     else:
         return

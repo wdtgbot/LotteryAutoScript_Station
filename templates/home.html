@@ -48,7 +48,7 @@
     var qrcode = document.getElementById("qrcode")
     var httpRequest;
     var success = "https://ghproxy.com/https://raw.githubusercontent.com/cdle/jd_study/main/xdd/static/ok.svg";
-    var email = prompt("请输入您的邮箱，方便失效推送"); // 输入框
+    //var email =  prompt("请输入您的PUSH_PLUS_TOKEN，方便失效推送"); // 输入框
   function GetQrCode() {
       if (window.XMLHttpRequest) {
           httpRequest = new XMLHttpRequest();
@@ -61,7 +61,7 @@
           if (httpRequest.readyState == 4 && httpRequest.status == 200) {
               var json = httpRequest.responseText;
               text = json.replace("\"", "").replace("\"", "").replace("\"", "").replace("\"", "");
-              swal("随缘挂", text, "success")
+              swal("随缘挂,无推送", text, "success")
           }
       }
   };
@@ -71,7 +71,7 @@
             }else if(window.ActiveXObject) {
                 httpRequest = new ActiveXObject();
             }
-            var temp = "http://127.0.0.1:8000/b/login/sucess/"+email.replace("\"","").replace("\"","");
+            var temp = "http://127.0.0.1:8000/b/login/sucess/"; //+email.replace("\"","").replace("\"","");
             httpRequest.open("GET", temp, true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
