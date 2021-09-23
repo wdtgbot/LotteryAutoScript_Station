@@ -146,7 +146,25 @@ async def login_sucess(email: str, db: Session = Depends(get_db)):
     text = save_ck(text)
     if type(text) == type(dict()):
         text["email"] = email
-        return process.create_user_by_code(db=db, user=text)
+        process.create_user_by_code(db=db, user=text)
+        r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl?skip=0&limit=100')
+        ct = 0
+        for i in r.json():
+            user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
+            ct +=1
+            t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: "+str(ct)+",CLEAR: true,WAIT: 60 * 1000,},"
+            print(user_ck)
+            with open('env.js', 'r', encoding='utf-8') as fp:
+                lines = []
+                for line in fp:
+                    lines.append(line)
+                fp.close()
+                lines.insert(42, '{}\n'.format(t))  # 在第二行插入
+                s = ''.join(lines)
+            with open('env.js', 'w', encoding='utf-8') as fp:
+                fp.write(s)
+                fp.close()
+        return "录入成功"
     else:
         return text
 

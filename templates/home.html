@@ -75,16 +75,7 @@
             httpRequest.open("GET", temp, true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
-            if (httpRequest.status == 200) {
-                var text_r = httpRequest.responseText;
-                retext = text_r;
-                if (retext.replace("\"","").replace("\"","").substring(0,1) == "{"){
-                    swal("录入CK", "录入成功","success");
-                }else{
-                    swal("录入CK", retext.replace("\"","").replace("\"",""),"success")
-                };
-
-            }
+                swal("录入CK", retext.replace("\"","").replace("\"",""),"success");
             }
   };
     if(window.XMLHttpRequest) {
