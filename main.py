@@ -1,5 +1,4 @@
 import json
-
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -37,7 +36,7 @@ headers = {'User-Agent': user_agent, 'Referer': "https://www.bilibili.com/"}
 headerss = {'User-Agent': user_agent,  'Host': 'passport.bilibili.com','Referer': "https://passport.bilibili.com/login"}
 qrcodedata = '0'
 
-class showpng(Thread):
+class showpng(Thread): # 生成图片模板
     def __init__(self, data):
         Thread.__init__(self)
         self.data = data
@@ -47,7 +46,7 @@ class showpng(Thread):
         img.show()
 
 
-def islogin(Session):
+def islogin(Session): # 判定是否已经登陆成功
     try:
         Session.cookies.load(ignore_discard=True)
     except Exception:
@@ -69,7 +68,7 @@ def home(request: Request):
         }
     )
 
-@application.get("/login")
+@application.get("/login") # 生成base64流图片
 def login():
     global oauthKey,Session,status_qr
     if not os.path.exists('cookies.txt'):
@@ -94,7 +93,7 @@ def login():
         status_qr = 1
         return text
 
-def save_ck(text):
+def save_ck(text): # 判定扫码结果是否保存
     try:
         tokenurl = 'https://passport.bilibili.com/qrcode/getLoginInfo'
         qrcodedata = Session.post(tokenurl, data={'oauthKey': oauthKey, 'gourl': 'https://www.bilibili.com/'},
@@ -123,19 +122,19 @@ def save_ck(text):
         return '未知错误, 录入失败, 大概率未扫码或扫码失败，也有可能是请求频繁了'
 
 @application.get('/readme')
-async def readme():
+async def readme(): # 说明
     text = "使用说明：1.二维码加载失败或二维码失效请刷新页面更新;  2.请勿在未扫码成功时点击保存ck，否则系统无法录入ck;  3.保存ck如若见到录入失败，只能刷新页面再次扫码保存，二维码不会动态加载;  4.暂时没做好配置界面，默认只转已关注的up的动态。"
     return text
 
 
-def get_db():
+def get_db(): # 数据库依赖
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-@application.get('/login/sucess/') # {email}
+@application.get('/login/sucess/') # {email} # 保存ck到数据库并修改对应文件
 async def login_sucess(db: Session = Depends(get_db)): # email: str,
     text = {
   "DedeUserID": "string",
@@ -147,19 +146,36 @@ async def login_sucess(db: Session = Depends(get_db)): # email: str,
     if type(text) == type(dict()):
         #text["email"] = email
         curd.create_user_by_code(db=db, user=text)
+        with open('env.js', 'r', encoding='utf-8') as fp:
+            lines = []
+            for line in fp:
+                lines.append(line)
+            fp.close()
+        cct = 42
+        for j in lines[42:]:
+            if j == ']\n':
+                kill_ct = cct
+                cct += 1
+            else:
+                cct += 1
+        with open('env.js', 'w', encoding='utf-8') as fp:
+            tplines = lines[0:42] + lines[kill_ct:]
+            s = ''.join(tplines)
+            fp.write(s)
+            fp.close()
         r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl?skip=0&limit=100')
         ct = 0
         for i in r.json():
-            user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
-            ct +=1
-            t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: "+str(ct)+",CLEAR: true,WAIT: 60 * 1000,},"
-            print(user_ck)
+            user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(
+                r.json()[ct]['bili_jct']) + ';'
+            ct += 1
+            t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: " + str(ct) + ",CLEAR: true,WAIT: 60 * 1000,},"
             with open('env.js', 'r', encoding='utf-8') as fp:
                 lines = []
                 for line in fp:
                     lines.append(line)
                 fp.close()
-                lines.insert(42, '{}\n'.format(t))  # 插入
+                lines.insert(42 + ct - 1, '{}\n'.format(t))  # 在第二行插入
                 s = ''.join(lines)
             with open('env.js', 'w', encoding='utf-8') as fp:
                 fp.write(s)
@@ -170,7 +186,7 @@ async def login_sucess(db: Session = Depends(get_db)): # email: str,
 
 
 @application.post("/create_user", response_model=schemas.Readuser)
-def create_user(user: schemas.Createuser, db: Session = Depends(get_db)):
+def create_user(user: schemas.Createuser, db: Session = Depends(get_db)): # json格式创建用户
     db_user = curd.get_user_by_name(db, DedeUserID=user.DedeUserID)
     if db_user:
         raise HTTPException(status_code=400, detail="user already registered")
@@ -178,14 +194,14 @@ def create_user(user: schemas.Createuser, db: Session = Depends(get_db)):
 
 
 @application.get("/get_user/{DedeUserID}", response_model=schemas.Readuser)
-def get_user(DedeUserID: str, db: Session = Depends(get_db)):
+def get_user(DedeUserID: str, db: Session = Depends(get_db)): # 通过DedeUserID查找用户
     db_user = curd.get_user_by_name(db, DedeUserID=DedeUserID)
     if db_user is None:
         raise HTTPException(status_code=404, detail="user not found")
     return db_user
 
 @application.get("/get_users/{admin}", response_model=List[schemas.Readuser])
-def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)): # 查找所有用户数据
     if admin == "spiritlhl":
         users = curd.get_users(db, skip=skip, limit=limit)
         return users

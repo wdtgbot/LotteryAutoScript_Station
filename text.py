@@ -44,7 +44,8 @@ for i in r.json():
         fp.close()
 '''
 
-with open('env.js', 'r', encoding='utf-8') as fp:
+
+with open('env1.js', 'r', encoding='utf-8') as fp:
     lines = []
     for line in fp:
         lines.append(line)
@@ -52,7 +53,28 @@ with open('env.js', 'r', encoding='utf-8') as fp:
 cct = 42
 for j in lines[42:]:
     if j == ']\n':
+        kill_ct = cct
         cct += 1
-        print(cct)
     else:
         cct+=1
+with open('env1.js','w',encoding='utf-8') as fp:
+    tplines = lines[0:42]+lines[kill_ct:]
+    s = ''.join(tplines)
+    fp.write(s)
+    fp.close()
+r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl?skip=0&limit=100')
+ct = 0
+for i in r.json():
+    user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
+    ct +=1
+    t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: "+str(ct)+",CLEAR: true,WAIT: 60 * 1000,},"
+    with open('env1.js', 'r', encoding='utf-8') as fp:
+        lines = []
+        for line in fp:
+            lines.append(line)
+        fp.close()
+        lines.insert(42+ct-1, '{}\n'.format(t))  # 在第二行插入
+        s = ''.join(lines)
+    with open('env1.js', 'w', encoding='utf-8') as fp:
+        fp.write(s)
+        fp.close()

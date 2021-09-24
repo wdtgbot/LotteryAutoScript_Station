@@ -75,7 +75,8 @@
             httpRequest.open("GET", temp, true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
-                swal("录入CK", retext.replace("\"","").replace("\"",""),"success");
+                var retext = httpRequest.responseText;
+                swal("录入CK", retext.replace("\"","").replace("\"","") ,"success");
             }
   };
     if(window.XMLHttpRequest) {
