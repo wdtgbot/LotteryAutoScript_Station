@@ -17,7 +17,7 @@ class user(Base):
     __mapper_args__ = {"order_by": id}  # 默认是正序，倒序加上.desc()方法
 
     def __repr__(self):
-        return f'{self.SESSDATA}_{self.DedeUserID}_{self.bili_jct}_{self.email}'
+        return f'{self.SESSDATA}_{self.DedeUserID}_{self.bili_jct}'#_{self.email}
 
 """ 附上三个SQLAlchemy教程
 SQLAlchemy的基本操作大全 

@@ -10,7 +10,6 @@ import http.cookiejar as cookielib
 from PIL import Image
 from typing import List
 
-import Bilibili.models
 from Bilibili import schemas, curd
 from Bilibili.database import engine, Base, SessionLocal
 
@@ -71,9 +70,9 @@ def home(request: Request):
 @application.get("/login") # 生成base64流图片
 def login():
     global oauthKey,Session,status_qr
-    if not os.path.exists('cookies.txt'):
-        with open("cookies.txt", 'w') as f:
-            f.write("")
+    #if not os.path.exists('cookies.txt'):
+    #    with open("cookies.txt", 'w') as f:
+    #        f.write("")
     Session = requests.session()
     Session.cookies = cookielib.LWPCookieJar(filename='bzcookies.txt')
     Session, status = islogin(Session)
@@ -135,7 +134,7 @@ def get_db(): # 数据库依赖
         db.close()
 
 @application.get('/login/sucess/') # {email} # 保存ck到数据库并修改对应文件
-async def login_sucess(db: Session = Depends(get_db)): # email: str,
+def login_sucess(db: Session = Depends(get_db)): # email: str,
     text = {
   "DedeUserID": "string",
   "SESSDATA": "string",
@@ -152,20 +151,24 @@ async def login_sucess(db: Session = Depends(get_db)): # email: str,
                 lines.append(line)
             fp.close()
         cct = 42
+        print('1')
         for j in lines[42:]:
             if j == ']\n':
                 kill_ct = cct
                 cct += 1
             else:
                 cct += 1
+        print('2')
         with open('env.js', 'w', encoding='utf-8') as fp:
             tplines = lines[0:42] + lines[kill_ct:]
             s = ''.join(tplines)
             fp.write(s)
             fp.close()
-        r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl?skip=0&limit=100')
+        print('3')
+        r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl/')
         ct = 0
         for i in r.json():
+            print(i)
             user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(
                 r.json()[ct]['bili_jct']) + ';'
             ct += 1
