@@ -144,7 +144,11 @@ def login_sucess(db: Session = Depends(get_db)): # email: str,
     text = save_ck(text)
     if type(text) == type(dict()):
         #text["email"] = email
-        curd.create_user_by_code(db=db, user=text)
+        db_user = curd.get_user_by_name(db, DedeUserID=text["DedeUserID"]) # 查询是否在库
+        if (db_user != None):
+            curd.change_user_by_code(db=db, user=text) # 在库更新ck
+        else:
+            curd.create_user_by_code(db=db, user=text) # 不在库创建ck
         with open('env.js', 'r', encoding='utf-8') as fp:
             lines = []
             for line in fp:
@@ -211,6 +215,32 @@ def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends
     else:
         return
 
+
+@application.post("/delete_user/{data}")
+def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 查找所有用户数据
+    if admin == "spiritlhl":
+        delete_user = curd.delete_user_by_code(db, DedeUserID=DedeUserID)
+        return delete_user
+    else:
+        return
+
+'''
+@application.get("/get_u/", response_model=schemas.Readuser)
+def text(db: Session = Depends(get_db)): # 通过DedeUserID查找用户
+    db_user = curd.get_user_by_name(db, DedeUserID="DedeUserID=11573578")
+    text = {
+        "DedeUserID": "DedeUserID=11573578",
+        "SESSDATA": "xxxxxx",
+        "bili_jct": "xxxxxxxxxx",
+        # "email": "string"
+    }
+    if (db_user != None):
+        curd.change_user_by_code(db=db, user=text)
+    else:
+        curd.create_user_by_code(db=db, user=text)
+    return db_user
+
+'''
 
 
 #

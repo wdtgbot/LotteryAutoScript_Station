@@ -1,4 +1,17 @@
-import json, requests,os
+import json
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+import qrcode, base64, requests, os
+from fake_useragent import UserAgent
+from threading import Thread
+from io import BytesIO
+import http.cookiejar as cookielib
+from PIL import Image
+from typing import List
+
+from Bilibili import schemas, curd
+from Bilibili.database import engine, Base, SessionLocal
 from Bilibili import schemas, curd
 import Bilibili.schemas
 from pydantic import BaseModel
@@ -52,6 +65,7 @@ for i in r.json():
         fp.close()
 '''
 
+'''
 with open('env.js', 'r', encoding='utf-8') as fp:
     lines = []
     for line in fp:
@@ -90,3 +104,18 @@ for i in r.json():
     with open('env.js', 'w', encoding='utf-8') as fp:
         fp.write(s)
         fp.close()
+'''
+Session = requests.session()
+
+def get_db(): # 数据库依赖
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def get_user(db: Session = Depends(get_db)): # 通过DedeUserID查找用户
+    db_user = curd.get_user_by_name(db, DedeUserID="DedeUserID=11573578")
+    print(db_user)
+
+get_user()

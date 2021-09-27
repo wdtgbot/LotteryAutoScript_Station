@@ -23,8 +23,24 @@ def create_user(db: Session, user: schemas.Createuser):
     return db_user
 
 def create_user_by_code(db: Session, user):
+    #if get_user_by_name(db, user["DedeUserID"]) ==
     db_user = models.user(**user)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def change_user_by_code(db: Session, user):
+    db_user = models.user(**user)
+    mod_user = db.query(models.user).filter(models.user.DedeUserID == db_user.DedeUserID).first()
+    mod_user.SESSDATA = db_user.SESSDATA
+    mod_user.bili_jct = db_user.bili_jct
+    db.commit()
+    db.refresh(mod_user)
+    return mod_user
+
+def delete_user_by_code(db: Session, DedeUserID: str):
+    mod_user = db.query(models.user).filter(models.user.DedeUserID == DedeUserID).first()
+    db.delete(mod_user)
+    db.commit()
+    return mod_user

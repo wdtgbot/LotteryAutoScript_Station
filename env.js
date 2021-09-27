@@ -12,7 +12,7 @@
  * 1. 将 ENABLE_MULTIPLE_ACCOUNT 的值改为true
  * 2. 将账号信息依次填写于 multiple_account_parm 中, 参考例子类推
  * - `WAIT` 表示下一个账号运行等待时间(毫秒)
- *
+ * 
  * **按顺序依次执行, 防止访问频繁封禁IP**
  */
 const account_parm = {
@@ -40,18 +40,8 @@ const account_parm = {
  */
 const multiple_account_parm = [
 
-    {
-    COOKIE: "DedeUserID=11573578;SESSDATA=24e6c12b%2C1648097296%2C6854d%2A91;bili_jct=3dab6a7122de75edf7e226e13b8bc977;",
-    NUMBER: 1,
-    CLEAR: true,
-    WAIT: 60 * 1000,
-    },
-    {
-    COOKIE: "string;string;string;",
-    NUMBER: 2,
-    CLEAR: true,
-    WAIT: 60 * 1000,
-    },
+{COOKIE: "DedeUserID=11573578;SESSDATA=f36d29f1%2C1648301631%2C6ae09%2A91;bili_jct=369b5c1478178967f2f714b7175cfd30;",NUMBER: 1,CLEAR: true,WAIT: 60 * 1000,},
+{COOKIE: "string;string;string;",NUMBER: 2,CLEAR: true,WAIT: 60 * 1000,},
 ]
 
 /**
