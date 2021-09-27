@@ -207,6 +207,7 @@ def get_user(DedeUserID: str, db: Session = Depends(get_db)): # 通过DedeUserID
         raise HTTPException(status_code=404, detail="user not found")
     return db_user
 
+
 @application.get("/get_users/{admin}", response_model=List[schemas.Readuser])
 def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)): # 查找所有用户数据
     if admin == "spiritlhl":
@@ -216,7 +217,7 @@ def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends
         return
 
 
-@application.post("/delete_user/{data}")
+@application.post("/delete_user/")
 def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 查找所有用户数据
     if admin == "spiritlhl":
         delete_user = curd.delete_user_by_code(db, DedeUserID=DedeUserID)
