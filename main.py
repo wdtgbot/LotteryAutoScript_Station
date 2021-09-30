@@ -90,6 +90,8 @@ def save_ck(text): # 判定扫码结果是否保存
 
 def write_ck():#配置文件写入ck
     #先清空文件记录
+    global kill_ct
+    kill_ct = 42
     with open('env.js', 'r', encoding='utf-8') as fp:
         lines = []
         for line in fp:
@@ -97,7 +99,7 @@ def write_ck():#配置文件写入ck
         fp.close()
     cct = 42
     for j in lines[42:]:
-        if j == ']\n':
+        if j == '    ],\n':
             kill_ct = cct
             cct += 1
         else:
@@ -114,13 +116,13 @@ def write_ck():#配置文件写入ck
         print(i)
         user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
         ct += 1
-        t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: " + str(ct) + ",CLEAR: true,WAIT: 60 * 1000,},"
+        t = "        {\n" + "         COOKIE: " + "\"" + user_ck + "\",\n" + "         NUMBER: " + str(ct) + ",\n"+"         CLEAR: true,\n"+"         WAIT: 60 * 1000,\n"+"    },\n"
         with open('env.js', 'r', encoding='utf-8') as fp:
             lines = []
             for line in fp:
                 lines.append(line)
             fp.close()
-            lines.insert(42 + ct - 1, '{}\n'.format(t))  # 在42行插入
+            lines.insert(42 + (ct-1)*6, '{}\n'.format(t))  # 在42行插入
             s = ''.join(lines)
         with open('env.js', 'w', encoding='utf-8') as fp:
             fp.write(s)
@@ -157,9 +159,9 @@ def files(
                     bili_jct: str    = Form(...)
                 ):
     cookie = {
-  "DedeUserID": DedeUserID,
-  "SESSDATA": SESSDATA,
-  "bili_jct": bili_jct,
+  "DedeUserID": "DedeUserID="+DedeUserID,
+  "SESSDATA": "SESSDATA="+SESSDATA,
+  "bili_jct": "bili_jct="+bili_jct,
   #"email": "string"
             }
     db_user = curd.get_user_by_name(db, DedeUserID=cookie["DedeUserID"])  # 查询是否在库
@@ -209,10 +211,11 @@ def login():
 @application.get('/readme')
 async def readme(): # 说明
     text = "1.二维码加载失败或二维码失效请刷新页面更新;" \
-           "2.请勿在未扫码成功时点击保存ck，否则系统无法录入ck;" \
-           "3.保存ck如若见到录入失败，刷新页面再次扫码录入;" \
-           "4.最下端有手动录入按钮，跳转后输入cookie值录入;" \
-           "5.暂时没做好配置界面，默认只转已关注的up的动态。"
+           "2.保存ck如若见到录入失败，刷新页面再次扫码录入;" \
+           "3.扫码登陆占用网页端，日常有使用网页端的请手动录入;" \
+           "4.手动录入浏览器抓ck请参照脚本仓库的获取方式;" \
+           "5.最下端有手动录入按钮，跳转后输入cookie值录入;" \
+           "6.暂时没做好配置界面，默认只转已关注的up的动态。"
     return text
 
 @application.get('/login/sucess/') # {email} # 保存ck到数据库并修改对应文件
