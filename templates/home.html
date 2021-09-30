@@ -60,8 +60,8 @@
       httpRequest.onreadystatechange = function () {
           if (httpRequest.readyState == 4 && httpRequest.status == 200) {
               var json = httpRequest.responseText;
-              text = json.replace("\"", "").replace("\"", "").replace("\"", "").replace("\"", "");
-              swal("随缘挂,无推送", text, "success")
+              text = json.replace("\"", "").replace("\"", "").toString().replaceAll(";",";\n");
+              swal("站点使用须知", text, "success")
           }
       }
   };
