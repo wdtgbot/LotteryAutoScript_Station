@@ -19,7 +19,8 @@ class user(Base):
     def __repr__(self):
         return f'{self.SESSDATA}_{self.DedeUserID}_{self.bili_jct}'#_{self.email}
 
-""" 附上三个SQLAlchemy教程
+
+""" SQLAlchemy教程
 SQLAlchemy的基本操作大全 
     http://www.taodudu.cc/news/show-175725.html
 Python3+SQLAlchemy+Sqlite3实现ORM教程 

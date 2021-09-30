@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#借鉴的扫码单文件
 import qrcode
 from fake_useragent import UserAgent
 from threading import Thread
@@ -17,6 +18,7 @@ user_agent = ua.chrome
 
 headers = {'User-Agent': user_agent, 'Referer': "https://www.bilibili.com/"}
 headerss = {'User-Agent': user_agent,  'Host': 'passport.bilibili.com','Referer': "https://passport.bilibili.com/login"}
+
 
 class showpng(Thread):
     def __init__(self, data):

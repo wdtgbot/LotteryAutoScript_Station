@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>耀炎食品有限公司</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <script>
+        function huantu(obj) {
+            var imgid = obj.id;
+            obj.style.display = 'none';
+            if (imgid == 'img1') {
+                document.getElementById('img2').style.display = 'block';
+            }
+            if (imgid == 'img2') {
+                document.getElementById('img3').style.display = 'block';
+            }
+            if (imgid == 'img3') {
+                document.getElementById('img4').style.display = 'block';
+            }
+            if (imgid == 'img4') {
+                document.getElementById('img1').style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="top">
+    <input type="button" id="inp1" value="首页" name="首页" onclick="goPage(this)" />
+    <input type="button" id="inp2" value="品牌与产品" name="品牌与产品" onclick="goPage(this)" />
+    <input type="button" id="inp3" value="联营合作" name="联营合作" onclick="goPage(this)" />
+    <input type="button" id="inp4" value="配套服务" name="配套服务" onclick="goPage(this)" />
+    <input type="button" id="inp5" value="门店信息" name="门店信息" onclick="goPage(this)" />
+    <input type="button" id="inp6" value="关于我们" onmouseover="mouseover()" onmouseleave="mouseleave()" />
+</div>
+<div id="index_gywm">
+    <input type="button" id="inp7" value="企业" name="关于我们" onclick="goPage(this)" onmouseover="mouseover()" onmouseleave="mouseleave()" />
+    <input type="button" id="inp8" value="加入我们" name="联营合作" onclick="goPage(this)" onmouseover="mouseover()" onmouseleave="mouseleave()" />
+</div>
+<div align="center" style="margin-top: -2px;">
+    <img id="img1" src="imgs/pic.png" width="1300px" height="600px" onclick="huantu(this)" />
+    <img id="img2" src="imgs/蛋糕1.png" width="1300px" height="600px" style="display: none" onclick="huantu(this)" />
+    <img id="img3" src="imgs/蛋糕2.png" width="1300px" height="600px" style="display: none" onclick="huantu(this)" />
+    <img id="img4" src="imgs/蛋糕3.png" width="1300px" height="600px" style="display: none" onclick="huantu(this)" />
+</div>
+<div align="center" style="margin-top: -4px">
+    <iframe id="ifr" src="html/首页.html" width="1300px" scrolling="no" style="height: 800px; border: none;" marginwidth="0px" marginheight="0px"></iframe>
+</div>
+<div align="center" style="margin-top: -3px">
+    <img src="imgs/bottom_background.png" width="1300px" height="100px" align="center"/>
+</div>
+
+<script>
+    var 首页 = 800; var 品牌与产品 = 1000; var 联营合作 = 500; var 配套服务 = 1000; var 门店信息 = 1380; var 关于我们 = 500;
+    preObj = document.getElementById('inp1');
+    preObj.style.color = '#65360a';
+    preObj.style.background = 'white';
+
+    function goPage(obj) {
+        if (obj.name == preObj.name){
+            obj.style.color = '#65360a';
+            obj.style.background = 'white';
+        }
+        else {
+            preObj.style.color = 'white';
+            preObj.style.background = '#65360a';
+            obj.style.color = '#65360a';
+            obj.style.background = 'white';
+            preObj = obj;
+        }
+        var page = obj.name;
+        var url = 'html/' + page + '.html';
+        var ifr = document.getElementById('ifr');
+        if (page == '首页'){
+            var height = 首页;
+        }
+        if (page == '品牌与产品'){
+            var height = 品牌与产品;
+        }
+        if (page == '联营合作'){
+            var height = 联营合作;
+        }
+        if (page == '配套服务'){
+            var height = 配套服务;
+        }
+        if (page == '门店信息'){
+            var height = 门店信息;
+        }
+        if (page == '关于我们'){
+            var height = 关于我们;
+        }
+        ifr.style.height = height.toString() + 'px';
+        ifr.src = url;
+    }
+
+    function mouseover() {
+        var gywm = document.getElementById('index_gywm');
+        gywm.style.display = 'block';
+    }
+    function mouseleave() {
+        var gywm = document.getElementById('index_gywm');
+        gywm.style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

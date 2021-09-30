@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" action="/b/inputck/" enctype="application/x-www-form-urlencoded" method="post">
+        <h2 class="form-signin-heading">手动填写cookie录入</h2>
+        <label for="input1" class="sr-only">填入cookie</label>
+        <input type="DedeUserID" name="DedeUserID" id="input1" class="form-control" placeholder="填写DedeUserID的值" required autofocus>
+        <label for="input2" class="sr-only">填入cookie</label>
+        <input type="SESSDATA" name="SESSDATA" id="input2" class="form-control" placeholder="填写SESSDATA的值" required autofocus>
+        <label for="input3" class="sr-only">填入cookie</label>
+        <input type="bili_jct" name="bili_jct" id="input3" class="form-control" placeholder="填写bili_jct的值" required autofocus>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> 记住ck
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">录入</button>
+      </form>
+
+    </div> <!-- /container -->
+
+
+  </body>
+</html>

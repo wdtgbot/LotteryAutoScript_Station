@@ -22,6 +22,7 @@ def create_user(db: Session, user: schemas.Createuser):
     db.refresh(db_user)
     return db_user
 
+
 def create_user_by_code(db: Session, user):
     #if get_user_by_name(db, user["DedeUserID"]) ==
     db_user = models.user(**user)
@@ -29,6 +30,7 @@ def create_user_by_code(db: Session, user):
     db.commit()
     db.refresh(db_user)
     return db_user
+
 
 def change_user_by_code(db: Session, user):
     db_user = models.user(**user)
@@ -38,6 +40,7 @@ def change_user_by_code(db: Session, user):
     db.commit()
     db.refresh(mod_user)
     return mod_user
+
 
 def delete_user_by_code(db: Session, DedeUserID: str):
     mod_user = db.query(models.user).filter(models.user.DedeUserID == DedeUserID).first()

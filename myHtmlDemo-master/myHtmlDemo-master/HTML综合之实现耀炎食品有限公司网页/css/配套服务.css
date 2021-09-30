@@ -1,0 +1,39 @@
+#ptfw
+{
+    margin: 0 auto;
+    width: 100%;
+    height: 1000px;
+    background: #f7f6f4;
+}
+#ptfw1
+{
+    width: 900px;
+    margin: 0 auto;
+}
+#ptfw1_1
+{
+    width: 900px;
+    height: 240px;
+    padding-top: 4px;
+}
+#ptfw1_2
+{
+    width: 900px;
+    height: 240px;
+}
+#ptfw1_3
+{
+    width: 900px;
+    height: 240px;
+}
+#ptfw1_4
+{
+    width: 900px;
+    height: 240px;
+}
+.inside_ptfw
+{
+    width: 420px;
+    height: 240px;
+    display: inline-block;
+}

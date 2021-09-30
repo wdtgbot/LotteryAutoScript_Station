@@ -12,8 +12,8 @@ app = FastAPI(
     redoc_url='/redocs',
 )
 
-
-app.include_router(application, prefix='/b', tags=['Bilibili二叉树抽奖站点'])
+#prefix后缀地址
+app.include_router(application, prefix='/b', tags=['Bilibili二叉树抽奖站点'])#, prefix='/b'
 
 
 

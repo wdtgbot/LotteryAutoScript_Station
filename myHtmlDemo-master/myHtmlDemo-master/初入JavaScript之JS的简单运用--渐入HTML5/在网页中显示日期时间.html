@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在网页中显示日期时间</title>
+    <script>
+        var d = new Date();
+        document.write("今天日期是：" + d.getFullYear().toString() + "年");
+        document.write((d.getMonth() + 1).toString() + "月");
+        document.write(d.getDate().toString() + "日");
+        switch (d.getDay()) {
+            case 0:document.write("&nbsp;星期日"); break;
+            case 1:document.write("&nbsp;星期一"); break;
+            case 2:document.write("&nbsp;星期二"); break;
+            case 3:document.write("&nbsp;星期三"); break;
+            case 4:document.write("&nbsp;星期四"); break;
+            case 5:document.write("&nbsp;星期五"); break;
+            case 6:document.write("&nbsp;星期六"); break;
+        }
+        document.write("&nbsp;现在时间是：" + d.getHours().toString() + "时");
+        document.write(d.getMinutes().toString() + "分");
+        document.write(d.getSeconds().toString() + "秒");
+    </script>
+</head>
+<body>
+</body>
+</html>

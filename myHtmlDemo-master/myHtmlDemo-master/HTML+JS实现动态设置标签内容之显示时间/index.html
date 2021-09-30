@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态设置标签内容</title>
+</head>
+<body>
+    <span id="clock"></span>
+    <script>
+        var int = self.setInterval("clock()", 50);
+        function clock()
+        {
+            var t = new Date();
+            document.getElementById("clock").innerText = t;
+        }
+    </script>
+    <button onclick="int=window.clearInterval(int)">Stop interval</button>
+</body>
+</html>

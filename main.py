@@ -1,14 +1,16 @@
-import json
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-import qrcode, base64, requests, os
 from fake_useragent import UserAgent
 from threading import Thread
 from io import BytesIO
-import http.cookiejar as cookielib
 from PIL import Image
 from typing import List
+
+
+import http.cookiejar as cookielib
+import qrcode, base64, requests
+
 
 from Bilibili import schemas, curd
 from Bilibili.database import engine, Base, SessionLocal
@@ -21,7 +23,7 @@ application = APIRouter()
 
 templates = Jinja2Templates(directory='./templates')
 
-application.mount("/static", StaticFiles(directory="./static"), name="static")
+#application.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 requests.packages.urllib3.disable_warnings()
@@ -58,40 +60,6 @@ def islogin(Session): # 判定是否已经登陆成功
         print('Cookies值已经失效，请重新扫码登录！')
         return Session, False
 
-@application.get("/")
-def home(request: Request):
-    return templates.TemplateResponse(
-        "home.html",
-        {
-            "request": request
-        }
-    )
-
-@application.get("/login") # 生成base64流图片
-def login():
-    global oauthKey,Session,status_qr
-    #if not os.path.exists('cookies.txt'):
-    #    with open("cookies.txt", 'w') as f:
-    #        f.write("")
-    Session = requests.session()
-    Session.cookies = cookielib.LWPCookieJar(filename='bzcookies.txt')
-    Session, status = islogin(Session)
-    if not status:
-        getlogin = Session.get('https://passport.bilibili.com/qrcode/getLoginUrl', headers=headers).json()
-        loginurl = requests.get(getlogin['data']['url'], headers=headers).url
-        oauthKey = getlogin['data']['oauthKey']
-        qr = qrcode.QRCode()
-        qr.add_data(loginurl)
-        img = qr.make_image()
-        a = BytesIO()
-        img.save(a, 'png')
-        png = a.getvalue()
-        a.close()
-        base64_data = base64.b64encode(png)  # 使用base64进行加密
-        text = 'data:image/gif;base64,'+str(base64_data)[2:-1]
-        status_qr = 1
-        return text
-
 def save_ck(text): # 判定扫码结果是否保存
     try:
         tokenurl = 'https://passport.bilibili.com/qrcode/getLoginInfo'
@@ -120,10 +88,43 @@ def save_ck(text): # 判定扫码结果是否保存
     except:
         return '未知错误, 录入失败, 大概率未扫码或扫码失败，也有可能是请求频繁了'
 
-@application.get('/readme')
-async def readme(): # 说明
-    text = "使用说明：1.二维码加载失败或二维码失效请刷新页面更新;  2.请勿在未扫码成功时点击保存ck，否则系统无法录入ck;  3.保存ck如若见到录入失败，只能刷新页面再次扫码保存，二维码不会动态加载;  4.暂时没做好配置界面，默认只转已关注的up的动态。"
-    return text
+def write_ck():#配置文件写入ck
+    #先清空文件记录
+    with open('env.js', 'r', encoding='utf-8') as fp:
+        lines = []
+        for line in fp:
+            lines.append(line)
+        fp.close()
+    cct = 42
+    for j in lines[42:]:
+        if j == ']\n':
+            kill_ct = cct
+            cct += 1
+        else:
+            cct += 1
+    with open('env.js', 'w', encoding='utf-8') as fp:
+        tplines = lines[0:42] + lines[kill_ct:]
+        s = ''.join(tplines)
+        fp.write(s)
+        fp.close()
+    #写入新数据
+    r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl/')
+    ct = 0
+    for i in r.json():
+        print(i)
+        user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
+        ct += 1
+        t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: " + str(ct) + ",CLEAR: true,WAIT: 60 * 1000,},"
+        with open('env.js', 'r', encoding='utf-8') as fp:
+            lines = []
+            for line in fp:
+                lines.append(line)
+            fp.close()
+            lines.insert(42 + ct - 1, '{}\n'.format(t))  # 在42行插入
+            s = ''.join(lines)
+        with open('env.js', 'w', encoding='utf-8') as fp:
+            fp.write(s)
+            fp.close()
 
 
 def get_db(): # 数据库依赖
@@ -132,6 +133,83 @@ def get_db(): # 数据库依赖
         yield db
     finally:
         db.close()
+
+@application.get("/")
+async def home(request: Request):
+    return templates.TemplateResponse(
+        "home.html",
+        {
+            "request": request
+        }
+    )
+
+@application.get("/ckpush/")
+async def ckpush(request: Request):
+    return templates.TemplateResponse('index.html', {'request': request})
+
+
+@application.post("/inputck/")
+def files(
+                    #request:           Request,
+                    db: Session = Depends(get_db),
+                    DedeUserID: str  = Form(...),
+                    SESSDATA: str    = Form(...),
+                    bili_jct: str    = Form(...)
+                ):
+    cookie = {
+  "DedeUserID": DedeUserID,
+  "SESSDATA": SESSDATA,
+  "bili_jct": bili_jct,
+  #"email": "string"
+            }
+    db_user = curd.get_user_by_name(db, DedeUserID=cookie["DedeUserID"])  # 查询是否在库
+    if (db_user != None):
+        curd.change_user_by_code(db=db, user=cookie)  # 在库更新ck
+    else:
+        curd.create_user_by_code(db=db, user=cookie)  # 不在库创建ck
+    write_ck()
+    return "录入成功，ck记录为{}".format(cookie)
+
+'''
+@application.get("/user/")
+async def home(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request
+        }
+    )
+'''
+
+@application.get("/login") # 生成base64流图片
+def login():
+    global oauthKey,Session,status_qr
+    #if not os.path.exists('cookies.txt'):
+    #    with open("cookies.txt", 'w') as f:
+    #        f.write("")
+    Session = requests.session()
+    Session.cookies = cookielib.LWPCookieJar(filename='bzcookies.txt')
+    Session, status = islogin(Session)
+    if not status:
+        getlogin = Session.get('https://passport.bilibili.com/qrcode/getLoginUrl', headers=headers).json()
+        loginurl = requests.get(getlogin['data']['url'], headers=headers).url
+        oauthKey = getlogin['data']['oauthKey']
+        qr = qrcode.QRCode()
+        qr.add_data(loginurl)
+        img = qr.make_image()
+        a = BytesIO()
+        img.save(a, 'png')
+        png = a.getvalue()
+        a.close()
+        base64_data = base64.b64encode(png)  # 使用base64进行加密
+        text = 'data:image/gif;base64,'+str(base64_data)[2:-1]
+        status_qr = 1
+        return text
+
+@application.get('/readme')
+async def readme(): # 说明
+    text = "使用说明：1.二维码加载失败或二维码失效请刷新页面更新;  2.请勿在未扫码成功时点击保存ck，否则系统无法录入ck;  3.保存ck如若见到录入失败，只能刷新页面再次扫码保存，二维码不会动态加载;  4.暂时没做好配置界面，默认只转已关注的up的动态。"
+    return text
 
 @application.get('/login/sucess/') # {email} # 保存ck到数据库并修改对应文件
 def login_sucess(db: Session = Depends(get_db)): # email: str,
@@ -149,44 +227,7 @@ def login_sucess(db: Session = Depends(get_db)): # email: str,
             curd.change_user_by_code(db=db, user=text) # 在库更新ck
         else:
             curd.create_user_by_code(db=db, user=text) # 不在库创建ck
-        with open('env.js', 'r', encoding='utf-8') as fp:
-            lines = []
-            for line in fp:
-                lines.append(line)
-            fp.close()
-        cct = 42
-        print('1')
-        for j in lines[42:]:
-            if j == ']\n':
-                kill_ct = cct
-                cct += 1
-            else:
-                cct += 1
-        print('2')
-        with open('env.js', 'w', encoding='utf-8') as fp:
-            tplines = lines[0:42] + lines[kill_ct:]
-            s = ''.join(tplines)
-            fp.write(s)
-            fp.close()
-        print('3')
-        r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl/')
-        ct = 0
-        for i in r.json():
-            print(i)
-            user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(
-                r.json()[ct]['bili_jct']) + ';'
-            ct += 1
-            t = "{" + "COOKIE: " + "\"" + user_ck + "\"," + "NUMBER: " + str(ct) + ",CLEAR: true,WAIT: 60 * 1000,},"
-            with open('env.js', 'r', encoding='utf-8') as fp:
-                lines = []
-                for line in fp:
-                    lines.append(line)
-                fp.close()
-                lines.insert(42 + ct - 1, '{}\n'.format(t))  # 在第二行插入
-                s = ''.join(lines)
-            with open('env.js', 'w', encoding='utf-8') as fp:
-                fp.write(s)
-                fp.close()
+        write_ck()
         return "录入成功"
     else:
         return text
@@ -218,7 +259,7 @@ def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends
 
 
 @application.post("/delete_user/")
-def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 查找所有用户数据
+def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 指定用户数据删除
     if admin == "spiritlhl":
         delete_user = curd.delete_user_by_code(db, DedeUserID=DedeUserID)
         return delete_user

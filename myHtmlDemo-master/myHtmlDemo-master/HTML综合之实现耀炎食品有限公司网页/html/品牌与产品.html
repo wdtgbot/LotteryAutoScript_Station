@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>品牌与产品</title>
+    <link rel="stylesheet" href="../css/品牌与产品.css" type="text/css">
+    <script>
+        function look(obj) {
+            var name = obj.id;
+            var name1 = name.slice(-1);
+            var name2 = name.slice(5, -1);
+            if (name1 == 1) {
+                document.getElementById('ppycp' + name2 + '2').style.display = 'none';
+                document.getElementById('ppycp' + name2 + '3').style.display = 'none';
+            }
+            if (name1 == 2) {
+                document.getElementById('ppycp' + name2 + '3').style.display = 'none';
+            }
+            if (name1 == 3) {
+                document.getElementById('ppycp' + name2 + '1').style.display = 'none';
+                document.getElementById('ppycp' + name2 + '2').style.display = 'none';
+            }
+            document.getElementById('nr' + name2 + name1).style.display = 'inline-block';
+            var pname = 'p' + name2 + name1;
+            var p = document.getElementById(pname);
+            p.style.color = '#ed6d00';
+        }
+        function nolook(obj) {
+            var name = obj.id;
+            var name1 = name.slice(-1);
+            var name2 = name.slice(5, -1);
+            if (name1 == 1){
+                document.getElementById('ppycp' + name2 + '2').style.display = 'inline-block';
+                document.getElementById('ppycp' + name2 + '3').style.display = 'inline-block';
+            }
+            if (name1 == 2) {
+                document.getElementById('ppycp' + name2 + '3').style.display = 'inline-block';
+            }
+            if (name1 == 3) {
+                document.getElementById('ppycp' + name2 + '1').style.display = 'inline-block';
+                document.getElementById('ppycp' + name2 + '2').style.display = 'inline-block';
+            }
+            document.getElementById('nr' + name2 + name1).style.display = 'none';
+            var pname = 'p' + name2 + name1;
+            var p = document.getElementById(pname);
+            p.style.color = 'black';
+        }
+    </script>
+</head>
+<body>
+<div id="ppycp">
+    <div id="ppycp1">
+        <div id="ppycp2">
+            <p>全部产品</p>
+            <p style="color: blue; padding-left: 20px">百滋百特</p>
+        </div>
+        <div id="ppycp3">
+            <p id="p4_1">美味甜甜圈</p>
+            <p id="p4_2">芝士蛋糕</p>
+            <p id="p4_3">闪电泡芙</p>
+            <P id="p5_1">慕斯甜甜圈</P>
+            <p id="p5_2">软欧圈</p>
+            <p id="p5_3">麦芬圈</p>
+            <p id="p6_1">起酥圈</p>
+            <p id="p6_2">常规蛋糕</p>
+            <p id="p6_3">果汁茶饮</p>
+        </div>
+        <div id="ppycp4">
+            <div id="ppycp4_1" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品1.png" height="220px" width="250px">
+            </div>
+            <div id="nr4_1">
+                <p align="center" style="font-size: 20px; color: #ed6d00">美味甜甜圈</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。</p>
+            </div>
+            <div id="ppycp4_2" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品2.png" height="220px" width="250px">
+            </div>
+            <div id="nr4_2">
+                <p align="center" style="font-size: 20px; color: #ed6d00">芝士蛋糕</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。甜甜圈，百滋百特秘制配方</p>
+            </div>
+            <div id="nr4_3">
+                <p align="center" style="font-size: 20px; color: #ed6d00">闪电泡芙</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。</p>
+            </div>
+            <div id="ppycp4_3" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品3.png" height="220px" width="250px">
+            </div>
+        </div>
+        <div id="ppycp5">
+            <div id="ppycp5_1" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品4.png" height="220px" width="250px">
+            </div>
+            <div id="nr5_1">
+                <p align="center" style="font-size: 20px; color: #ed6d00">慕斯甜甜圈</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。</p>
+            </div>
+            <div id="ppycp5_2" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品5.png" height="220px" width="250px">
+            </div>
+            <div id="nr5_2">
+                <p align="center" style="font-size: 20px; color: #ed6d00">软欧圈</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。甜甜圈，百滋百特秘制配方</p>
+            </div>
+            <div id="nr5_3">
+                <p align="center" style="font-size: 20px; color: #ed6d00">麦芬圈</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。</p>
+            </div>
+            <div id="ppycp5_3" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品6.png" height="220px" width="250px">
+            </div>
+        </div>
+        <div id="ppycp6">
+            <div id="ppycp6_1" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品1.png" height="220px" width="250px">
+            </div>
+            <div id="nr6_1">
+                <p align="center" style="font-size: 20px; color: #ed6d00">起酥圈</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。</p>
+            </div>
+            <div id="ppycp6_2" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品2.png" height="220px" width="250px">
+            </div>
+            <div id="nr6_2">
+                <p align="center" style="font-size: 20px; color: #ed6d00">常规蛋糕</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。甜甜圈，百滋百特秘制配方</p>
+            </div>
+            <div id="nr6_3">
+                <p align="center" style="font-size: 20px; color: #ed6d00">果汁茶饮</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致。甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致……</p>
+                <p style="text-indent: 2em;">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。</p>
+            </div>
+            <div id="ppycp6_3" onmouseover="look(this)" onmouseleave="nolook(this)">
+                <img src="../imgs/品牌与产品3.png" height="220px" width="250px">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用锯齿数组</title>
+    <script type="text/javascript">
+        var subject = [["SQL SERVER", "C# OOP"], ["WEB FORM", "HTML/CSS/JAVASCRIPT", "ORACLE"], ["ASP.NET MVC", "LINQ"]];
+        document.write("subject数组的长度：" + subject.length.toString() + "<br/>");
+        for (var i=0; i<subject.length; i++)
+        {
+            document.write("subject数组对象的第" + i.toString() + "个元素是另一个数组.这个小数组的长度：" + subject[i].length.toString() + "<br/>");
+            for (var j=0; j<subject[i].length; j++)
+            {
+                document.write("第" + j.toString() + "个元素：" + subject[i][j] + "<br\>");
+            }
+            document.write("<hr/>");
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

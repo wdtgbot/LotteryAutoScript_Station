@@ -244,6 +244,7 @@ module.exports = {
         clear_dynamic_type: 1
     },
 
+
     /**
      * 针对某一账号的特别设置
      * config_[数字] 依次类推

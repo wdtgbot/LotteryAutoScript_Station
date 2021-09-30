@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计算属性使用</title>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+<div id = "app">
+    <p>数学 <input type = "text" v-model.number = "math"></p>
+    <p>物理 <input type = "text" v-model.number = "physics"></p>
+    <p>英语 <input type = "text" v-model.number = "English"></p>
+    <p>总分  {{sumNum}}</p>
+    <p>平均分  {{averageNum}}</p>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+                math : null,
+                physics : null,
+                English : null,
+        },
+
+        computed :{
+            sumNum: function () {
+                return this.math + this.physics + this.English;
+            },
+
+            averageNum: function () {
+                return Math.round(this.sumNum / 3);
+            }
+        }
+    })
+</script>
+</body>
+</html>

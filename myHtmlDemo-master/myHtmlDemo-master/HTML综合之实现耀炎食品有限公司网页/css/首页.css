@@ -1,0 +1,93 @@
+#rcmd
+{
+    margin: 0 auto;
+    width: 100%;
+    height: 800px;
+    background: #f7f6f4;
+}
+#rcmd1
+{
+    width: 900px;
+    margin: 0 auto;
+}
+#rcmd2
+{
+    width: 900px;
+    height: 50px;
+    padding-top: 20px;
+    color: #65360a;
+    font-size: 20px;
+    text-align: center;
+}
+#rcmd3_1
+{
+    width: 250px;
+    height: 310px;
+    display: inline-block;
+    text-align: center;
+}
+#rcmd3_2
+{
+    width: 250px;
+    height: 310px;
+    margin-left: 55px;
+    display: inline-block;
+    text-align: center;
+}
+#rcmd3_3
+{
+    width: 250px;
+    height: 310px;
+    margin-left: 55px;
+    display: inline-block;
+    text-align: center;
+}
+#rcmd4
+{
+    margin-top: 50px;
+}
+#rcmd4_1
+{
+    width: 250px;
+    height: 310px;
+    display: inline-block;
+    text-align: center;
+}
+#rcmd4_2
+{
+    width: 250px;
+    height: 310px;
+    margin-left: 55px;
+    display: inline-block;
+    text-align: center;
+}
+#rcmd4_3
+{
+    width: 250px;
+    height: 310px;
+    margin-left: 55px;
+    display: inline-block;
+    text-align: center;
+}
+.p1
+{
+    color: #ed6d00;
+    font-size: 18px;
+}
+.p2
+{
+    color: #ed6d00;
+    font-size: 10px;
+    margin-top: -23px;
+}
+.p3
+{
+    margin-top: -5px;
+    font-size: 14px;
+    text-align: left;
+    text-indent: 2em;
+}
+#rcmd3_1:hover, #rcmd3_2:hover, #rcmd3_3:hover, #rcmd4_1:hover, #rcmd4_2:hover, #rcmd4_3:hover
+{
+    background: white;
+}

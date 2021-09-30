@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DIV做矩形运动</title>
+    <style>
+        div
+        {
+            width:200px;
+            height:200px;
+            background:red;
+            border-radius: 200px;
+            position:relative;
+            animation-name:mymove;
+            animation-duration:10s;
+            animation-timing-function:linear;
+            animation-delay:1s;
+            animation-iteration-count:infinite;
+            /*animation-direction:alternate;*/    /*这一行让div块原路返回而不是绕一个方向转*/
+            animation-play-state:running;
+        }
+
+        @keyframes mymove
+        {
+            0%   {background:red; left:0px; top:0px;}
+            25%  {background:yellow; left:800px; top:0px;}
+            50%  {background:blue; left:800px; top:400px;}
+            75%  {background:green; left:0px; top:400px;}
+            100% {background:red; left:0px; top:0px;}
+        }
+    </style>
+</head>
+<body>
+<div>
+</div>
+</body>
+</html>

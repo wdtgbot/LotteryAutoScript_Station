@@ -41,7 +41,8 @@ const account_parm = {
 const multiple_account_parm = [
 
 {COOKIE: "DedeUserID=11573578;SESSDATA=f36d29f1%2C1648301631%2C6ae09%2A91;bili_jct=369b5c1478178967f2f714b7175cfd30;",NUMBER: 1,CLEAR: true,WAIT: 60 * 1000,},
-{COOKIE: "string;string;string;",NUMBER: 2,CLEAR: true,WAIT: 60 * 1000,},
+{COOKIE: "ssss;sssssss;sssss;",NUMBER: 2,CLEAR: true,WAIT: 60 * 1000,},
+{COOKIE: "xx;2222;11111;",NUMBER: 3,CLEAR: true,WAIT: 60 * 1000,},
 ]
 
 /**

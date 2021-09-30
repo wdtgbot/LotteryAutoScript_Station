@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="../css/首页.css" type="text/css">
+    <script>
+        function f(obj) {
+            p = obj.getElementsByTagName('p');
+            if (p[0].innerText == '美味甜甜圈'){
+                p[0].style.color = '#d56964';
+                p[1].style.color = '#d56964';
+            }
+            if (p[0].innerText == '闪电泡芙'){
+                p[0].style.color = '#05bf6c';
+                p[1].style.color = '#05bf6c';
+            }
+            if (p[0].innerText == '卡布奇洛'){
+                p[0].style.color = '#ED6D00';
+                p[1].style.color = '#ED6D00';
+            }
+            if (p[0].innerText == '起酥圈'){
+                p[0].style.color = '#ED6D00';
+                p[1].style.color = '#ED6D00';
+            }
+            if (p[0].innerText == '马卡龙'){
+                p[0].style.color = '#d56964';
+                p[1].style.color = '#d56964';
+            }
+            if (p[0].innerText == '手工曲奇饼'){
+                p[0].style.color = '#05bf6c';
+                p[1].style.color = '#05bf6c';
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="rcmd">
+    <div id="rcmd1">
+        <div id="rcmd2">———————————————————·产品推荐·———————————————————</div>
+        <div id="rcmd3">
+            <div id="rcmd3_1" onclick="f(this)">
+                <img src="../imgs/美味甜甜圈.png" width="250px" height="200px"/>
+                <p class="p1">美味甜甜圈</p>
+                <p class="p2">————·————</p>
+                <p class="p3">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致...</p>
+            </div>
+            <div id="rcmd3_2" onclick="f(this)">
+                <img src="../imgs/闪电泡芙.png" width="250px" height="200px"/>
+                <p class="p1">闪电泡芙</p>
+                <p class="p2">————·————</p>
+                <p class="p3">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致...</p>
+            </div>
+            <div id="rcmd3_3" onclick="f(this)">
+                <img src="../imgs/卡布奇洛.png" width="250px" height="200px"/>
+                <p class="p1">卡布奇洛</p>
+                <p class="p2">————·————</p>
+                <p class="p3">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致...</p>
+            </div>
+        </div>
+        <div id="rcmd4">
+            <div id="rcmd4_1" onclick="f(this)">
+                <img src="../imgs/起酥圈.png" width="250px" height="200px"/>
+                <p class="p1">起酥圈</p>
+                <p class="p2">————·————</p>
+                <p class="p3">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致...</p>
+            </div>
+            <div id="rcmd4_2" onclick="f(this)">
+                <img src="../imgs/马卡龙.png" width="250px" height="200px"/>
+                <p class="p1">马卡龙</p>
+                <p class="p2">————·————</p>
+                <p class="p3">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致...</p>
+            </div>
+            <div id="rcmd4_3" onclick="f(this)">
+                <img src="../imgs/手工曲奇饼.png" width="250px" height="200px"/>
+                <p class="p1">手工曲奇饼</p>
+                <p class="p2">————·————</p>
+                <p class="p3">甜甜圈，百滋百特秘制配方，纯手工制作，每一个圈都堪称经典。低糖低油，口感松软，外形精致...</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
