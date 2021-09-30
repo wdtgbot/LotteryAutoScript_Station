@@ -29,6 +29,11 @@ templates = Jinja2Templates(directory='./templates')
 requests.packages.urllib3.disable_warnings()
 
 
+#一些重要自定义参数
+urlip = 'http://127.0.0.1:8000/'
+admin = 'spiritlhl'
+
+
 status_qr = 0
 Session = requests.session()
 ua = UserAgent(path='ua.json')
@@ -110,7 +115,8 @@ def write_ck():#配置文件写入ck
         fp.write(s)
         fp.close()
     #写入新数据
-    r = requests.get('http://127.0.0.1:8000/b/get_users/spiritlhl/')
+    temp_url = urlip+'b/get_users/'+admin+'/'
+    r = requests.get(temp_url)
     ct = 0
     for i in r.json():
         print(i)
@@ -258,7 +264,7 @@ def get_user(DedeUserID: str, db: Session = Depends(get_db)): # 通过DedeUserID
 
 @application.get("/get_users/{admin}", response_model=List[schemas.Readuser])
 def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)): # 查找所有用户数据
-    if admin == "spiritlhl":
+    if admin == admin:
         users = curd.get_users(db, skip=skip, limit=limit)
         return users
     else:
@@ -267,7 +273,7 @@ def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends
 
 @application.post("/delete_user/")
 def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 指定用户数据删除
-    if admin == "spiritlhl":
+    if admin == admin:
         delete_user = curd.delete_user_by_code(db, DedeUserID=DedeUserID)
         return delete_user
     else:

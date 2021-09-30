@@ -38,13 +38,14 @@
                 </p>
 
                 <div class="more">
-                    <a class="button" onclick="window.open('http://127.0.0.1:8000/b/ckpush/')" title="手动录入ck">手动录入ck</a>
+                    <a class="button" onclick="window.open(urlip+'b/ckpush/')" title="手动录入ck">手动录入ck</a>
                 </div>
             </div>
         </section>
     </div>
 </body>
 <script>
+    var urlip="http://127.0.0.1:8000/"
     var qrcode = document.getElementById("qrcode")
     var httpRequest;
     var success = "https://ghproxy.com/https://raw.githubusercontent.com/cdle/jd_study/main/xdd/static/ok.svg";
@@ -55,7 +56,7 @@
       } else if (window.ActiveXObject) {
           httpRequest = new ActiveXObject();
       }
-      httpRequest.open("GET", "http://127.0.0.1:8000/b/readme", true);
+      httpRequest.open("GET", urlip+"b/readme", true);
       httpRequest.send();
       httpRequest.onreadystatechange = function () {
           if (httpRequest.readyState == 4 && httpRequest.status == 200) {
@@ -71,7 +72,7 @@
             }else if(window.ActiveXObject) {
                 httpRequest = new ActiveXObject();
             }
-            var temp = "http://127.0.0.1:8000/b/login/sucess/"; //+email.replace("\"","").replace("\"","");
+            var temp = urlip+"b/login/sucess/"; //+email.replace("\"","").replace("\"","");
             httpRequest.open("GET", temp, true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
@@ -84,7 +85,7 @@
             }else if(window.ActiveXObject) {
                 httpRequest = new ActiveXObject();
             };
-            httpRequest.open("GET", "http://127.0.0.1:8000/b/login", true);
+            httpRequest.open("GET", urlip+"b/login", true);
             httpRequest.send();
             httpRequest.onreadystatechange = function () {
                 if (httpRequest.readyState == 4 && httpRequest.status == 200) {
