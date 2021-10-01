@@ -10,7 +10,9 @@
 
 ## 前端页面
 
-![](https://i.loli.net/2021/09/25/cmyxInagYdlFjtb.png)
+![](https://i.loli.net/2021/10/01/gOfc961inyWTv2w.jpg)
+
+![](https://i.loli.net/2021/10/01/1H9cNVmrL5lz2Qw.png)
 
 ## 后端页面
 
