@@ -42,7 +42,51 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">录入</button>
       </form>
 
-    </div> <!-- /container -->
+
+          <div class="blog-post">
+            <h3 class="blog-post-title">获取COOKIE方法1：直接复制值</h3>
+            <p class="blog-post-meta">进入<a href="https://www.bilibili.com/" target="_blank">B站主页:https://www.bilibili.com/</a>获取Cookie用于登录</p>
+
+            <p>Chrome浏览器:</p>
+            <ul>
+              <li>1.键盘按 F12 打开控制台 或 按鼠标键点击检查</li>
+              <li>2.进入Application找到Cookies栏中的三个变量</li>
+                <li>（找到下图中的所需三项，不需要点第三步的取消勾选）</li>
+                <img height="500em" src="https://camo.githubusercontent.com/09df55889964d29b817ad9e614e00c1774c422c7a282717e0717b29511cc8e57/68747470733a2f2f67697465652e636f6d2f7368616e6d6974652f4c6f74746572794175746f5363726970742f7261772f6d61696e2f646f632f7069632f676574436f6f6b6965732e706e67" />
+              <li>3.分别双击三个变量对应的Value，双击后会选中其Value值，ctrl+c复制或者鼠标右键选择复制，粘贴到本页面对应的框内</li>
+              <li>4.粘贴完毕后提交即可，返回显示录入成功即可</li>
+            </ul>
+            <p>注意只需要变量对应的值！！！！</p>
+            <p>注意复制完整！！！！</p>
+          </div>
+
+          <div class="blog-post">
+            <h3 class="blog-post-title">获取COOKIE方法2：使用控制台获取</h3>
+            <p class="blog-post-meta">进入<a href="https://www.bilibili.com/" target="_blank">B站主页:https://www.bilibili.com/</a>获取Cookie用于登录</p>
+
+            <p>Chrome浏览器:</p>
+            <ul>
+              <li>1.键盘按 F12 打开控制台 或 按鼠标键点击检查</li>
+              <li>2.进入Application找到Cookies栏中的SESSDATA将HttpOnly选项取消勾选</li>
+                <li>(此步骤是为了方便后续采用JS获取Cookies,获取完毕后应再次勾选)</li>
+                <img height="500em" src="https://camo.githubusercontent.com/09df55889964d29b817ad9e614e00c1774c422c7a282717e0717b29511cc8e57/68747470733a2f2f67697465652e636f6d2f7368616e6d6974652f4c6f74746572794175746f5363726970742f7261772f6d61696e2f646f632f7069632f676574436f6f6b6965732e706e67" />
+              <li>3.在Console中复制下一点后的代码并回车</li>
+              <li>/** 自动复制到粘贴板 */
+document
+  .cookie
+  .split(/\s*;\s*/)
+  .map(it => it.split('='))
+  .filter(it => ['DedeUserID','bili_jct', 'SESSDATA'].indexOf(it[0]) > -1)
+  .map(it => it.join('='))
+  .join('; ')
+  .split()
+  .forEach(it => copy(it) || console.log(it))</li>
+              <li>4.回车后会显示一行包含那三个值的输出，将对应等号后的值填入本页面框提交即可</li>
+            </ul>
+            <p>注意只需要变量对应的值！！！！</p>
+            <p>注意复制完整！！！！</p>
+          </div>
+    </div>
 
 
   </body>

@@ -30,6 +30,7 @@
 		    <a class="button" onclick="GetQrCode()" title="注意事项">注意事项</a>
 	            <a class="button" onclick="window.open('https://jq.qq.com/?_wv=1027&k=bdTVzEXQ')" title="联系站长">联系站长</a>
 	            <a class="button" onclick="window.open('https://git.spiritlhl.workers.dev/spiritLHL/Hang-up-items')" title="项目推荐">项目推荐</a>
+                    <a class="button" onclick="tsxx()" title="推送信息">推送(beta)</a>
                     </li>
                 </ul>
                 <p>
@@ -38,7 +39,7 @@
                 </p>
 
                 <div class="more">
-                    <a class="button" onclick="window.open(urlip+'b/ckpush/')" title="手动录入ck">手动录入ck</a>
+                    <br /><a class="button" onclick="window.open(urlip+'b/ckpush/')" title="手动录入ck">手动录入ck</a>
                 </div>
             </div>
         </section>
@@ -93,6 +94,9 @@
                     qrcode.src = json.replace("\"", "").replace("\"", "");
                 }
             };
+    function tsxx(){
+        swal("推送信息", "暂时只支持pushplus群组推送，群组二维码如下\n 图片链接 \n 复制浏览器打开微信扫码即可 \n一对一推送未做好，不需要推送的请无视", "success")
+    }
 </script>
 
 </html>
