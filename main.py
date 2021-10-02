@@ -1,4 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Form
+import random
+import time
+
+from fastapi import APIRouter, Depends, HTTPException, Request, Form, BackgroundTasks
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fake_useragent import UserAgent
@@ -9,7 +12,7 @@ from typing import List
 
 
 import http.cookiejar as cookielib
-import qrcode, base64, requests
+import qrcode, base64, requests, time, random
 
 
 from Bilibili import schemas, curd
@@ -280,31 +283,37 @@ def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 指
     else:
         return
 
-@application.post("/check_user/")
-def check_users(admin: str, db: Session = Depends(get_db)): # 检查所有ck并删除过期ck
-    if admin == admin:
-        temp_url = urlip + 'b/get_users/' + admin + '/'
-        r = requests.get(temp_url)
-        yzurl = "https://api.bilibili.com/nav"  # "https://api.bilibili.com/x/web-interface/nav"
-        ua = UserAgent(path='ua.json')
+
+def check_real_users(db):
+    temp_url = urlip + 'b/get_users/' + admin + '/'
+    r = requests.get(temp_url)
+    yzurl = "https://api.bilibili.com/nav"  # "https://api.bilibili.com/x/web-interface/nav"
+    ua = UserAgent(path='ua.json')
+    ct = 0
+    for i in r.json():
         user_agent_t = ua.chrome
-        ct = 0
-        for i in r.json():
-            user_ck_t = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
-            headers = {
-                "cookie": user_ck_t,
-                "referer": "https://space.bilibili.com/",
-                "User-Agent": user_agent
-            }
-            ct += 1
-            res = requests.get(yzurl, headers=headers)
-            if res.json()["code"] == 0:
-                continue
-            elif res.json()["code"] == -101:
-                curd.delete_user_by_code(db, DedeUserID=r.json()[ct-1]['DedeUserID'])
-                write_ck()
-            else:
-                continue
+        user_ck_t = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(
+            r.json()[ct]['bili_jct']) + ';'
+        headers = {
+            "cookie": user_ck_t,
+            "referer": "https://space.bilibili.com/",
+            "User-Agent": user_agent_t
+        }
+        ct += 1
+        res = requests.get(yzurl, headers=headers)
+        time.sleep(random.uniform(2.1,5.1))#增加间隔
+        if res.json()["code"] == 0:
+            continue
+        elif res.json()["code"] == -101:
+            curd.delete_user_by_code(db, DedeUserID=r.json()[ct - 1]['DedeUserID'])
+            write_ck()
+        else:
+            continue
+
+@application.post("/check_user/")
+def check_users(admin: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)): # 检查所有ck并删除过期ck
+    if admin == admin:
+        background_tasks.add_task(check_real_users, db)
         return "检查完毕并删除过期ck"
     else:
         return "未知错误"
