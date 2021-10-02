@@ -24,10 +24,10 @@
 - [x] 添加cookie后刷新脚本的env配置文件
 - [x] pushplus群组推送
 - [x] 多次扫码cookie更新替换
-- [x] 匹配DedeUserID删除库内cookie
+- [x] 匹配DedeUserID删除数据库内的cookie
 - [x] 增加手动录入ck页面，方便自己浏览器抓ck录入
-- [ ] 删除同时刷新脚本配置文件删除
-- [ ] 定时识别库内cookie是否有效
+- [x] 删除同时刷新脚本配置文件内的ck记录
+- [x] 检查库内所有cookie后删除所有过期cookie
 - [ ] 一对一通知推送
 - [ ] 个人自定义配置
 - [ ] 账号管理面板

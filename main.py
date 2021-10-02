@@ -31,7 +31,7 @@ requests.packages.urllib3.disable_warnings()
 
 #一些重要自定义参数
 urlip = 'http://127.0.0.1:8000/'
-admin = 'spiritlhl'
+admin = 'admin'
 
 
 status_qr = 0
@@ -275,9 +275,39 @@ def get_users(admin: str, skip: int = 0, limit: int = 100, db: Session = Depends
 def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 指定用户数据删除
     if admin == admin:
         delete_user = curd.delete_user_by_code(db, DedeUserID=DedeUserID)
+        write_ck()
         return delete_user
     else:
         return
+
+@application.post("/check_user/")
+def check_users(admin: str, db: Session = Depends(get_db)): # 检查所有ck并删除过期ck
+    if admin == admin:
+        temp_url = urlip + 'b/get_users/' + admin + '/'
+        r = requests.get(temp_url)
+        yzurl = "https://api.bilibili.com/nav"  # "https://api.bilibili.com/x/web-interface/nav"
+        ua = UserAgent(path='ua.json')
+        user_agent_t = ua.chrome
+        ct = 0
+        for i in r.json():
+            user_ck_t = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
+            headers = {
+                "cookie": user_ck_t,
+                "referer": "https://space.bilibili.com/",
+                "User-Agent": user_agent
+            }
+            ct += 1
+            res = requests.get(yzurl, headers=headers)
+            if res.json()["code"] == 0:
+                continue
+            elif res.json()["code"] == -101:
+                curd.delete_user_by_code(db, DedeUserID=r.json()[ct-1]['DedeUserID'])
+                write_ck()
+            else:
+                continue
+        return "检查完毕并删除过期ck"
+    else:
+        return "未知错误"
 
 '''
 @application.get("/get_u/", response_model=schemas.Readuser)

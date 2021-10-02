@@ -65,7 +65,7 @@ for i in r.json():
         fp.close()
 '''
 
-'''
+"""
 with open('env.js', 'r', encoding='utf-8') as fp:
     lines = []
     for line in fp:
@@ -104,6 +104,8 @@ for i in r.json():
     with open('env.js', 'w', encoding='utf-8') as fp:
         fp.write(s)
         fp.close()
+"""
+
 '''
 Session = requests.session()
 
@@ -120,3 +122,18 @@ def get_user(db: Session = Depends(get_db)): # 通过DedeUserID查找用户
 
 
 get_user()
+'''
+
+yzurl = "https://api.bilibili.com/nav" #"https://api.bilibili.com/x/web-interface/nav"
+ua = UserAgent(path='ua.json')
+user_agent = ua.chrome
+headers = {
+    "cookie": "DedeUserID=20935726;SESSDATA=cb6ed015%2C1641729266%2C7b3e2%2A71;bili_jct=eb4886634421fc2537820ee35dd0d8b3;",
+    "referer": "https://space.bilibili.com/",
+    "User-Agent": user_agent
+}
+
+#code -101 未登陆
+#code 0 登陆成功
+r = requests.get(yzurl,headers=headers)
+print(r.json()["code"] == 0)
