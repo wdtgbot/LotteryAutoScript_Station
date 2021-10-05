@@ -9,7 +9,7 @@ class user(Base):
     DedeUserID = Column(String(100), unique=True, nullable=False, comment='DedeUserID')
     SESSDATA = Column(String(100), nullable=False, comment='SESSDATA')
     bili_jct = Column(String(100), nullable=False, comment='bili_jct')
-    #email = Column(String(100), nullable=False, comment='email')
+    email = Column(String(100), nullable=False, comment='email')
 
     created_at = Column(DateTime, server_default=func.now(), comment='创建时间')
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), comment='更新时间')

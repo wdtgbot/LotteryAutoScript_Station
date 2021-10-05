@@ -165,13 +165,14 @@ def files(
                     db: Session = Depends(get_db),
                     DedeUserID: str  = Form(...),
                     SESSDATA: str    = Form(...),
-                    bili_jct: str    = Form(...)
+                    bili_jct: str    = Form(...),
+                    email: str       = Form(...)
                 ):
     cookie = {
   "DedeUserID": "DedeUserID="+DedeUserID,
   "SESSDATA": "SESSDATA="+SESSDATA,
   "bili_jct": "bili_jct="+bili_jct,
-  #"email": "string"
+  "email": email
             }
     db_user = curd.get_user_by_name(db, DedeUserID=cookie["DedeUserID"])  # 查询是否在库
     if (db_user != None):
@@ -227,17 +228,17 @@ async def readme(): # 说明
            "6.暂时没做好配置界面，默认只转已关注的up的动态。"
     return text
 
-@application.get('/login/sucess/') # {email} # 保存ck到数据库并修改对应文件
-def login_sucess(db: Session = Depends(get_db)): # email: str,
+@application.get('/login/sucess/{email}') # {email} # 保存ck到数据库并修改对应文件
+def login_sucess(email: int, db: Session = Depends(get_db)):
     text = {
   "DedeUserID": "string",
   "SESSDATA": "string",
   "bili_jct": "string",
-  #"email": "string"
+  "email": "string"
             }
     text = save_ck(text)
     if type(text) == type(dict()):
-        #text["email"] = email
+        text["email"] = email
         db_user = curd.get_user_by_name(db, DedeUserID=text["DedeUserID"]) # 查询是否在库
         if (db_user != None):
             curd.change_user_by_code(db=db, user=text) # 在库更新ck
@@ -246,7 +247,7 @@ def login_sucess(db: Session = Depends(get_db)): # email: str,
         write_ck()
         return "录入成功"
     else:
-        return text
+        return "错误原因：{}".format(text)
 
 
 @application.post("/create_user", response_model=schemas.Readuser)
@@ -343,7 +344,5 @@ def text(db: Session = Depends(get_db)): # 通过DedeUserID查找用户
 #git push -f origin master
 
 '''
-<form>
-                            <input type="text" id="email" value="" placeholder="邮件通知地址(必填)" style="font-size:15px;"><br>
-                    </form>
+
 '''

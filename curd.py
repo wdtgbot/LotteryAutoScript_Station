@@ -37,6 +37,7 @@ def change_user_by_code(db: Session, user):
     mod_user = db.query(models.user).filter(models.user.DedeUserID == db_user.DedeUserID).first()
     mod_user.SESSDATA = db_user.SESSDATA
     mod_user.bili_jct = db_user.bili_jct
+    mod_user.email = db_user.email
     db.commit()
     db.refresh(mod_user)
     return mod_user
