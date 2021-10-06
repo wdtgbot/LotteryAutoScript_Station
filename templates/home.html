@@ -33,6 +33,7 @@
 		    <a class="button" onclick="GetQrCode()" title="注意事项">注意事项</a>
 	            <a class="button" onclick="window.open('https://jq.qq.com/?_wv=1027&k=bdTVzEXQ')" title="联系站长">联系站长</a>
 	            <a class="button" onclick="window.open('https://git.spiritlhl.workers.dev/spiritLHL/Hang-up-items')" title="项目推荐">项目推荐</a>
+                    <a class="button" onclick="tsxx()" title="推送信息">推送事项</a>
                     </li>
                 </ul>
                 <p>
@@ -97,6 +98,9 @@
                     qrcode.src = json.replace("\"", "").replace("\"", "");
                 }
             };
+    function tsxx(){
+        swal("推送信息", "一对一推送已做好，有需要请填写QQ进行私聊推送，不需要推送的随便填，不能空着", "success")
+    }
 </script>
 
 </html>

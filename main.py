@@ -310,7 +310,24 @@ def check_real_users(db):
         if res.json()["code"] == 0:
             continue
         elif res.json()["code"] == -101:
-            curd.delete_user_by_code(db, DedeUserID=r.json()[ct - 1]['DedeUserID'])
+            ttpp = r.json()[ct - 1]['DedeUserID']
+            id = str(ttpp)[11:]
+            resttpp = requests.get("https://space.bilibili.com/" + str(id) + "/")
+            name = re.findall(r"<title>(.*?)的个人空间_哔哩哔哩_Bilibili", resttpp.text)[0]
+            try:
+                qq = curd.get_user_by_name(db, "DedeUserID=" + str(id)).email
+                data = {
+                    'user_id': qq,
+                    'message': "你的账号  昵称：{}  uid：{}\n 记录已过期，请重行录入".format(name, id)
+                }
+                requests.post(qqurl + 'send_private_msg', data)
+            except:
+                data = {
+                    'user_id': zqq,
+                    'message': '账号id{}，昵称{} 过期推送失败'.format(id, name)
+                }
+                requests.post(qqurl + 'send_private_msg', data)
+            curd.delete_user_by_code(db, DedeUserID=ttpp)
             write_ck()
         else:
             continue
@@ -323,14 +340,11 @@ def check_users(admin: str, background_tasks: BackgroundTasks, db: Session = Dep
     else:
         return "未知错误"
 
-
-@application.get("/push_msg/")
-def push_msg(db: Session = Depends(get_db)):
+def imbox_push(db):
     with Imbox('imap.exmail.qq.com', 'bzhan@spiritlhl.top', '136926@Lh', ssl=True) as imbox:
         # 获取全部邮件
         inbox_message_after = imbox.messages(date__on=datetime.date.today())
         for uid, message in inbox_message_after:
-            # print(message.subject)  # 邮件主题
             if message.body['plain'][0][:4] == "发生时间":
                 body = message.body['plain'][0]
                 body = body.replace("   ", '\n')
@@ -354,6 +368,10 @@ def push_msg(db: Session = Depends(get_db)):
                     requests.post(qqurl+'send_private_msg', data)
             else:
                 imbox.delete(uid)
+
+@application.get("/push_msg/")
+def push_msg(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    background_tasks.add_task(imbox_push, db)
     return "发送完毕"
 
 '''
