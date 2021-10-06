@@ -8,12 +8,12 @@ app = FastAPI(
     title='FastAPI by spiritlhl',
     description='FastAPI',
     version='1.0.0',
-    docs_url='/docs',
-    redoc_url='/redocs',
+    docs_url='/docs',     # 后端接口路径，可自行修改
+    redoc_url='/redocs',  # 后端接口文档接口路径，可自行修改
 )
 
 #prefix后缀地址
-app.include_router(application, prefix='/b', tags=['Bilibili二叉树抽奖站点'])#, prefix='/b'
+app.include_router(application, prefix='/b', tags=['Bilibili二叉树抽奖站点'])# 主页路径，可自行修改
 
 
 

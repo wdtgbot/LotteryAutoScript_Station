@@ -40,12 +40,6 @@ module.exports = Object.freeze({
 
 
 
-        {
-         COOKIE: "DedeUserID=11573578;SESSDATA=47cb4a42%2C1648998501%2C97282%2Aa1;bili_jct=5f3a82a46046a069e090d56ab1d2c92b;",
-         NUMBER: 1,
-         CLEAR: true,
-         WAIT: 60 * 1000,
-    },
 
     ],
 
@@ -68,11 +62,11 @@ module.exports = Object.freeze({
         QYWX_KEY: "",
         IGOT_PUSH_KEY: "",
         PUSH_PLUS_TOKEN: "",
-        PUSH_PLUS_USER: "1313",
-        SMTP_HOST: "",
-        SMTP_PORT: "",
-        SMTP_USER: "",
-        SMTP_PASS: "",
+        PUSH_PLUS_USER: "",
+        SMTP_HOST: "", //必填
+        SMTP_PORT: "", //必填
+        SMTP_USER: "", //必填
+        SMTP_PASS: "", //必填
         SMTP_TO_USER: ""
     }
 })
