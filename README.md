@@ -6,17 +6,17 @@
 
 配套脚本仓库链接： [https://github.com/shanmiteko/LotteryAutoScript](https://github.com/shanmiteko/LotteryAutoScript)
 
-本仓库文件为本地展示版本，服务器部署需要根据IP和域名修改多处配置
+本仓库文件为本地展示版本，服务器部署需要根据IP和域名修改多处配置，并更改一些模块的导入路径
 
 ## 前端页面
 
-![](https://i.loli.net/2021/10/01/gOfc961inyWTv2w.jpg)
+![](https://i.loli.net/2021/10/06/RmapSE8uMd4vKIj.png)
 
-![](https://i.loli.net/2021/10/01/1H9cNVmrL5lz2Qw.png)
+![](https://i.loli.net/2021/10/06/hsvX4Und5aoEp8D.png)
 
 ## 后端页面
 
-![](https://i.loli.net/2021/09/25/oNSFZlKV8q3H9CP.png)
+![](https://i.loli.net/2021/10/06/BkE7oMjYTCsZf3q.png)
 
 ## 功能
 
@@ -28,7 +28,7 @@
 - [x] 增加手动录入ck页面，方便自己浏览器抓ck录入
 - [x] 删除同时刷新脚本配置文件内的ck记录
 - [x] 检查库内所有cookie后删除所有过期cookie
-- [ ] 一对一通知推送
+- [x] 一对一通知推送
 - [ ] 个人自定义配置
 - [ ] 账号管理面板
 
