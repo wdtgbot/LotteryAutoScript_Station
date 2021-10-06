@@ -1,6 +1,7 @@
 import random
 import time
 
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Form, BackgroundTasks
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -9,10 +10,11 @@ from threading import Thread
 from io import BytesIO
 from PIL import Image
 from typing import List
+from imbox import Imbox
 
 
 import http.cookiejar as cookielib
-import qrcode, base64, requests, time, random
+import qrcode, base64, requests, time, random, datetime, re
 
 
 from Bilibili import schemas, curd
@@ -35,6 +37,8 @@ requests.packages.urllib3.disable_warnings()
 #一些重要自定义参数
 urlip = 'http://127.0.0.1:8000/'
 admin = 'admin'
+qqurl = ""
+zqq = ""
 
 
 status_qr = 0
@@ -318,6 +322,39 @@ def check_users(admin: str, background_tasks: BackgroundTasks, db: Session = Dep
         return "检查完毕并删除过期ck"
     else:
         return "未知错误"
+
+
+@application.get("/push_msg/")
+def push_msg(db: Session = Depends(get_db)):
+    with Imbox('imap.exmail.qq.com', 'bzhan@spiritlhl.top', '136926@Lh', ssl=True) as imbox:
+        # 获取全部邮件
+        inbox_message_after = imbox.messages(date__on=datetime.date.today())
+        for uid, message in inbox_message_after:
+            # print(message.subject)  # 邮件主题
+            if message.body['plain'][0][:4] == "发生时间":
+                body = message.body['plain'][0]
+                body = body.replace("   ", '\n')
+                body = body.replace('{ "content": "', '\n').replace(' {"content":"', '\n')
+                body = body.replace(' "}', '\n').replace('" }', '\n')
+                id = re.findall(r"私信你(.*?)说", body)[0][1:-1]
+                res = requests.get("https://space.bilibili.com/" + str(id) + "/")
+                name = re.findall(r"<title>(.*?)的个人空间_哔哩哔哩_Bilibili", res.text)[0]
+                try:
+                    qq = curd.get_user_by_name(db, "DedeUserID="+str(id)).email
+                    data = {
+                        'user_id': qq,
+                        'message': "你的账号  昵称：{}  uid：{}\n".format(name, id)+body
+                    }
+                    requests.post(qqurl+'send_private_msg', data)
+                except:
+                    data = {
+                        'user_id': zqq,
+                        'message': '账号id{}，昵称{}推送失败'.format(id, name)
+                    }
+                    requests.post(qqurl+'send_private_msg', data)
+            else:
+                imbox.delete(uid)
+    return "发送完毕"
 
 '''
 @application.get("/get_u/", response_model=schemas.Readuser)
