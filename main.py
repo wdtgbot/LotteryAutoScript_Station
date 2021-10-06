@@ -39,6 +39,9 @@ urlip = 'http://127.0.0.1:8000/'
 admin = 'admin'
 qqurl = ""
 zqq = ""
+imap_url = ''
+zzemail = ''
+zzemail_password = ''
 
 
 status_qr = 0
@@ -341,7 +344,7 @@ def check_users(admin: str, background_tasks: BackgroundTasks, db: Session = Dep
         return "未知错误"
 
 def imbox_push(db):
-    with Imbox('imap.exmail.qq.com', 'bzhan@spiritlhl.top', '136926@Lh', ssl=True) as imbox:
+    with Imbox(imap_url, zzemail, zzemail_password, ssl=True) as imbox:
         # 获取全部邮件
         inbox_message_after = imbox.messages(date__on=datetime.date.today())
         for uid, message in inbox_message_after:
