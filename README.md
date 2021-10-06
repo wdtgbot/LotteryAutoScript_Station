@@ -56,6 +56,10 @@ pip install -r requirement.txt
 
 等待依赖包安装完成
 
+配置QQ推送，后续需要用到go-cqhttp机器人的http发信息端口
+
+具体配置详见：[https://docs.go-cqhttp.org/](https://docs.go-cqhttp.org/)
+
 ### step 3
 
 安装完成后修改```run.py```,```main.py```,```home.html```，```env.js```文件，按照注释修改
