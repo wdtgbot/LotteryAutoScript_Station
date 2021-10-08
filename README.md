@@ -14,7 +14,7 @@
 
 ![](https://i.loli.net/2021/10/06/RmapSE8uMd4vKIj.png)
 
-![](https://i.loli.net/2021/10/06/hsvX4Und5aoEp8D.png)
+![](https://i.loli.net/2021/10/08/LRCyVTzfGAsJr9Y.png)
 
 ## 后端页面
 
@@ -24,7 +24,6 @@
 
 - [x] 扫码添加cookie到Bilibili.sqlite3数据库
 - [x] 添加cookie后刷新脚本的env配置文件
-- [x] pushplus群组推送
 - [x] 多次扫码cookie更新替换
 - [x] 匹配DedeUserID删除数据库内的cookie
 - [x] 增加手动录入ck页面，方便自己浏览器抓ck录入
@@ -71,7 +70,7 @@ redoc_url='/redocs',  # 后端接口文档接口路径，可自行修改
 ```
 
 ```python
-#main.py
+#push28.py
 
 #一些重要自定义参数
 urlip = 'http://127.0.0.1:8000/' #部署的在服务器，将127.0.0.1换成对应外网ip或域名，端口记得在服务器开放，可自己改为其他端口
