@@ -29,7 +29,6 @@ templates = Jinja2Templates(directory='./templates')
 
 requests.packages.urllib3.disable_warnings()
 
-
 #一些重要自定义参数
 urlip = 'http://127.0.0.1:8000/' #部署的在服务器，将127.0.0.1换成对应外网ip或域名，端口记得在服务器开放，可自己改为其他端口
 admin = 'admin' # 后端一些接口操作所需的验证权限码
@@ -359,12 +358,14 @@ def imbox_push(db):
                         'message': "你的账号  昵称：{}  uid：{}\n".format(name, id)+body
                     }
                     requests.post(qqurl+'send_private_msg', data)
+                    imbox.delete(uid)
                 except:
                     data = {
                         'user_id': zqq,
                         'message': '账号id{}，昵称{}推送失败'.format(id, name)
                     }
                     requests.post(qqurl+'send_private_msg', data)
+                    imbox.delete(uid)
             else:
                 imbox.delete(uid)
 
