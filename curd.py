@@ -24,7 +24,6 @@ def create_user(db: Session, user: schemas.Createuser):
 
 
 def create_user_by_code(db: Session, user):
-    #if get_user_by_name(db, user["DedeUserID"]) ==
     db_user = models.user(**user)
     db.add(db_user)
     db.commit()
