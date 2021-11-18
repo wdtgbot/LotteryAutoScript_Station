@@ -30,14 +30,14 @@ templates = Jinja2Templates(directory='./templates')
 requests.packages.urllib3.disable_warnings()
 
 
-urlip = ''
-admin = ''
-qqurl = ""
-zqq = ""
-imap_url = ''
-zzemail = ''
-zzemail_password = ''
-group_id=
+urlip = 'http://127.0.0.1:8000/' #部署的在服务器，将127.0.0.1换成对应外网ip或域名，端口记得在服务器开放，可自己改为其他端口
+admin = 'admin' # 后端一些接口操作所需的验证权限码
+qqurl = "" # go-cqhttp机器人发送消息的路径，一般是http://服务器外网ip:5700/
+zqq = "" # 自己的Q号，推送失败接受信息的Q号
+imap_url = '' # 腾讯云企业邮箱或qq邮箱的imap服务器地址，与my_config邮箱推送对应
+zzemail = '' # 对应的邮箱
+zzemail_password = '' # 邮箱对应的授权码，腾讯云企业邮箱则是密码即可
+group_id=  # Q群号，推送到指定Q群，推送后会删除邮箱中中转的邮件
 
 
 status_qr = 0
