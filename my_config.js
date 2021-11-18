@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = Object.freeze({
     /** 
      * 默认设置(公用)
      */
@@ -7,7 +7,6 @@ module.exports = {
          * 监视更转的用户uid
          */
         UIDs: [
-            31252386,
             689277291,
             241675899
         ],
@@ -28,6 +27,36 @@ module.exports = {
             '动态抽奖',
             '抽奖',
         ],
+
+        /**
+         * 从API接口中获取抽奖信息
+         * @typedef {object} LotteryInfo
+         * @property {string} lottery_info_type
+         * @property {number} create_time
+         * @property {boolean} is_liked
+         * @property {number[]} uids `[uid,ouid]`
+         * @property {string} uname
+         * @property {Array<{}>} ctrl
+         * @property {string} dyid
+         * @property {string} rid
+         * @property {string} des
+         * @property {number} type
+         * @property {boolean} hasOfficialLottery 是否官方
+         * @typedef RespondBody
+         * @property {string} err_msg 错误信息
+         * @property {LotteryInfo[]} lottery_info
+         * API传回数据类型 {RespondBody}
+         * 获取抽奖信息的链接字符串
+         * @example
+         * "https://raw.fastgit.org/spiritLHL/sync_lottery/master/archive_datas/datas.json"
+         */
+        APIs: ["",""], //接口找我另一个仓库https://github.com/spiritLHL/sync_lottery
+
+        /**
+         * API发送数据类型 {LotteryInfo[]}
+         * 上传抽奖信息的链接字符串
+         */
+        set_lottery_info_url: "", //接口找我另一个仓库https://github.com/spiritLHL/sync_lottery
 
         /**
          * 动态中的关键词(表示须同时满足以下条件)
@@ -52,12 +81,18 @@ module.exports = {
          * - '01'只评论非官抽
          * - '11'都评论
          */
-        chatmodel: '11',
+        chatmodel: '01',
+
+        /**
+         * - 动态创建时间
+         * - 多少天前
+         */
+        max_create_time: 60,
 
         /**
          * 不加判断的转发所监视的uid转发的动态
          */
-        is_imitator: true,
+        is_imitator: false,
 
         /**
          * - 在uid里检索的页数
@@ -75,6 +110,11 @@ module.exports = {
         article_scan_page: 3,
 
         /**
+         * - 专栏创建时间距离现在的最大天数
+         */
+        article_create_time: 7,
+
+        /**
          * - 不检查专栏是否看过，若选择检查可以提高检测效率
          * - 默认false(检查)
          */
@@ -90,33 +130,69 @@ module.exports = {
          *  - 循环等待时间(指所有操作完毕后的休眠时间)
          *  - 单位毫秒
          */
-        lottery_loop_wait: 12 * 60 * 60 * 1000,
-        check_loop_wait: 24 * 60 * 60 * 1000,
+        lottery_loop_wait: 0,
+        check_loop_wait: 0,
         clear_loop_wait: 0,
-        update_loop_wait: 72 * 60 * 60 * 1000,
+        update_loop_wait: 0,
 
         /**
          * - 转发间隔时间
          * - 单位毫秒
          * - 上下浮动50%
          */
-        wait: 50 * 1000,
+        wait: 30 * 1000,
 
         /**
          * - 检索动态间隔
          * - 单位毫秒
          */
-        search_wait: 1300,
+        search_wait: 2000,
+
+        /**
+         * - 读取下一页私信间隔
+         * - 单位毫秒
+         */
+        get_session_wait: 3000,
+
+        /**
+         * - 已读私信间隔
+         * - 单位毫秒
+         */
+        update_session_wait: 1000,
+
+        /**
+         * - 读取下一页关注列表间隔
+         * - 单位毫秒
+         */
+        get_partition_wait: 2000,
+
+        /**
+         * - 获取动态细节间隔
+         * - 单位毫秒
+         */
+        get_dynamic_detail_wait: 2000,
+
+        /**
+         * - 过滤间隔(开奖时间/粉丝数)
+         * - 单位毫秒
+         */
+        filter_wait: 1000,
+
+        /**
+         * - 随机动态间隔
+         * - 单位毫秒
+         */
+        random_dynamic_wait: 2000,
 
         /**
          * - up主粉丝数限制
          */
-        minfollower: 0,
+        minfollower: 1000,
 
         /**
          * - 只转发已关注的
          */
-        only_followed: true,
+        only_followed: false,
 
         /**
          * - 是否发送随机动态(防止被开奖机过滤)
@@ -124,15 +200,21 @@ module.exports = {
         create_dy: false,
 
         /**
-         * - 发送随机动态的数量
+         * 随机动态类型
+         * - 0 自定义文字与图片
+         * - 1 推荐视频
+         * - -1 混合
+         */
+        create_dy_type: 0,
+
+        /**
+         * - 结束运行时发送随机动态的数量
          */
         create_dy_num: 1,
 
         /**
          * - 随机动态内容
          * - 类型 `content[]`
-         */
-        /**
          * @typedef Picture
          * @property {string} img_src 站内源
          * @property {number} img_width
@@ -140,6 +222,12 @@ module.exports = {
          * @param { string | Picture[] } content
          */
         dy_contents: ['[doge]', '[doge][doge]'],
+
+        /**
+         * - 每转发x条抽奖动态就发送x条随机动态
+         * - @example [[10,11,9],[6,8,9]] 每转发9,10,11条抽奖动态就发送6,8,9条随机动态
+         */
+        create_dy_mode: [[0], [0]],
 
         /**
          * 转发时[at]的用户
@@ -155,20 +243,23 @@ module.exports = {
         /**
          * 屏蔽词
          */
-        blockword: ["脚本抽奖", "恭喜", "结果", "抽奖号", "钓鱼", "涨粉","脚本","送我"],
+        blockword: ["脚本抽奖", "恭喜", "结果", "抽奖号", "钓鱼", "涨粉"],
 
         /**
          * 转发评语
          */
-        relay: ['[doge]','[doge][doge]','[OK]','[星星眼]', '[歪嘴]来了','冲不动了[吃瓜]','[吃瓜]','凑热闹','分子分母之争','下次一定','打卡','我的我的','[打call]','不多说了，凑个数','来了来了','分母！','还有人冲吗','来了来了','天选之人','贴贴[doge]','[吃瓜]','23333','666','你说是谁就是谁[doge]','人可真多','能中就是奇迹','2333','万中无一','[OK]','[星星眼]','[歪嘴]','[喜欢]','[偷笑]','[笑]','[喜极而泣]','[辣眼睛]','[吃瓜]','[奋斗]','永不缺席 永不中奖 永不放弃！','万一呢','在','冲吖~','来了','万一','[保佑][保佑]','从未中，从未停','[吃瓜]','[抠鼻][抠鼻]','来了','秋梨膏','[呲牙]','从不缺席','分子','可以','不会吧','好','rush','来来来','ok','冲','凑热闹','我要我要[打call]','我还能中！让我中！！！','大家都散了吧，已经抽完了，是我的','我是天选之子','给我中一次吧！','[OK][OK]','我来抽个奖','中中中中中中','[doge][doge][doge]','我我我'],
+        relay: ['转发动态'],
 
         /**
          * 评论内容
          */
         chat: [
-            '[doge]','[doge][doge]','[OK]','[星星眼]', '[歪嘴]来了','冲不动了[吃瓜]','[吃瓜]','凑热闹','分子分母之争','下次一定','打卡','我的我的','[打call]','不多说了，凑个数','来了来了','分母！','还有人冲吗','来了来了','天选之人','贴贴[doge]','[吃瓜]','23333','666','你说是谁就是谁[doge]','人可真多','能中就是奇迹','2333','万中无一','[OK]','[星星眼]','[歪嘴]','[喜欢]','[偷笑]','[笑]','[喜极而泣]','[辣眼睛]','[吃瓜]','[奋斗]','永不缺席 永不中奖 永不放弃！','万一呢','在','冲吖~','来了','万一','[保佑][保佑]','从未中，从未停','[吃瓜]','[抠鼻][抠鼻]','来了','秋梨膏','[呲牙]','从不缺席','分子','可以','不会吧','好','rush','来来来','ok','冲','凑热闹','我要我要[打call]','我还能中！让我中！！！','大家都散了吧，已经抽完了，是我的','我是天选之子','给我中一次吧！','[OK][OK]','我来抽个奖','中中中中中中','[doge][doge][doge]','我我我'
-         ],
-
+            '[OK]', '[星星眼]', '[歪嘴]', '[喜欢]', '[偷笑]', '[笑]', '[喜极而泣]', '[辣眼睛]', '[吃瓜]', '[奋斗]',
+            '永不缺席 永不中奖 永不放弃！', '万一呢', '在', '冲吖~', '来了', '万一', '[保佑][保佑]', '从未中，从未停', '[吃瓜]', '[抠鼻][抠鼻]',
+            '来力', '秋梨膏', '[呲牙]', '从不缺席', '分子', '可以', '恰', '不会吧', '1', '好',
+            'rush', '来来来', 'ok', '冲', '凑热闹', '我要我要[打call]', '我还能中！让我中！！！', '大家都散了吧，已经抽完了，是我的', '我是天选之子', '给我中一次吧！',
+            '坚持不懈，迎难而上，开拓创新！', '[OK][OK]', '我来抽个奖', '中中中中中中', '[doge][doge][doge]', '我我我',
+        ],
 
         /**
          * - 抽奖UP用户分组id(网页端点击分区后地址栏中的tagid)
@@ -185,11 +276,17 @@ module.exports = {
          * - 中奖通知关键词(满足一个就推送)
          * - 符合js正则表达式的字符串
          * - 若以 ~ 开头则表示为黑名单规则
+         * - 优先级递增
          */
         notice_key_words: [
-            "中奖|获得|填写|写上|提供|收货地址|支付宝账号|码|大会员",
-            "~有奖预约通知"
+            "~预约成功|预约主题",
+            "中奖|获得|填写|写上|提供|收货地址|支付宝账号|码|大会员"
         ],
+
+        /**
+         * - 获取私信页数
+         */
+        check_session_pages: 16,
 
         /**
          * - 清理白名单uid或dyid
@@ -217,12 +314,12 @@ module.exports = {
         /**
          * 是否移除动态
          */
-        clear_remove_dynamic: false,
+        clear_remove_dynamic: true,
 
         /**
          * 是否移除关注
          */
-        clear_remove_attention: false,
+        clear_remove_attention: true,
 
         /**
          * 清除动态延时(毫秒)
@@ -231,7 +328,7 @@ module.exports = {
 
         /**
          * 清除动态类型
-         *
+         * 
          * | 动态类型   | type值 |
          * | :------- |:----- |
          * | 无        | `0`    |
@@ -239,10 +336,15 @@ module.exports = {
          * | 含图片     | `2`    |
          * | 无图纯文字  | `4`    |
          * | 视频       | `8`    |
+         * | 番剧       | `512`  |
          * | 活动       | `2048` |
          * | 专栏       | `64`   |
+         * 
+         * @example
+         * 1
+         * [1,2,4]
          */
-        clear_dynamic_type: 1
+        clear_dynamic_type: [1]
     },
 
     /**
@@ -252,4 +354,4 @@ module.exports = {
     config_1: {},
     config_2: {},
     config_3: {}
-}
+})
