@@ -10,7 +10,7 @@ from imbox import Imbox
 
 
 import http.cookiejar as cookielib
-import qrcode, base64, requests, time, random, datetime, re
+import qrcode, base64, requests, random, time, datetime, re
 
 
 import schemas, curd
@@ -29,14 +29,15 @@ templates = Jinja2Templates(directory='./templates')
 
 requests.packages.urllib3.disable_warnings()
 
-#一些重要自定义参数
-urlip = 'http://127.0.0.1:8000/' #部署的在服务器，将127.0.0.1换成对应外网ip或域名，端口记得在服务器开放，可自己改为其他端口
-admin = 'admin' # 后端一些接口操作所需的验证权限码
-qqurl = "" # go-cqhttp机器人发送消息的路径，一般是http://服务器外网ip:5700/
-zqq = "" # 自己的Q号，推送失败接受信息的Q号
-imap_url = '' # 腾讯云企业邮箱或qq邮箱的imap服务器地址，与my_config邮箱推送对应
-zzemail = '' # 对应的邮箱
-zzemail_password = '' # 邮箱对应的授权码，腾讯云企业邮箱则是密码即可
+
+urlip = ''
+admin = ''
+qqurl = ""
+zqq = ""
+imap_url = ''
+zzemail = ''
+zzemail_password = ''
+group_id=
 
 
 status_qr = 0
@@ -127,7 +128,7 @@ def write_ck():#配置文件写入ck
         print(i)
         user_ck = str(r.json()[ct]['DedeUserID']) + ';' + str(r.json()[ct]['SESSDATA']) + ';' + str(r.json()[ct]['bili_jct']) + ';'
         ct += 1
-        t = "        {\n" + "         COOKIE: " + "\"" + user_ck + "\",\n" + "         NUMBER: " + str(ct) + ",\n"+"         CLEAR: true,\n"+"         WAIT: 60 * 1000,\n"+"    },\n"
+        t = "        {\n" + "         COOKIE: " + "\"" + user_ck + "\",\n" + "         NUMBER: " + str(ct) + ",\n"+"         CLEAR: true,\n"+"         WAIT: 70 * 1000,\n"+"    },\n"
         with open('env.js', 'r', encoding='utf-8') as fp:
             lines = []
             for line in fp:
@@ -183,17 +184,6 @@ def files(
         curd.create_user_by_code(db=db, user=cookie)  # 不在库创建ck
     write_ck()
     return "录入成功，ck记录为{}".format(cookie)
-
-'''
-@application.get("/user/")
-async def home(request: Request):
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request
-        }
-    )
-'''
 
 @application.get("/login") # 生成base64流图片
 def login():
@@ -286,7 +276,6 @@ def get_users(admin: str, DedeUserID: str, db: Session = Depends(get_db)): # 指
     else:
         return
 
-
 def check_real_users(db):
     temp_url = urlip + 'b/get_users/' + admin + '/'
     r = requests.get(temp_url)
@@ -338,63 +327,52 @@ def check_users(admin: str, background_tasks: BackgroundTasks, db: Session = Dep
     else:
         return "未知错误"
 
-def imbox_push(db):
+def push_msg_QQ(db):
     with Imbox(imap_url, zzemail, zzemail_password, ssl=True) as imbox:
         # 获取全部邮件
         inbox_message_after = imbox.messages(date__on=datetime.date.today())
         for uid, message in inbox_message_after:
-            if message.body['plain'][0][:4] == "发生时间":
+            if message.body['plain'][0][:4] == "## 私":
                 body = message.body['plain'][0]
                 body = body.replace("   ", '\n')
                 body = body.replace('{ "content": "', '\n').replace(' {"content":"', '\n')
                 body = body.replace(' "}', '\n').replace('" }', '\n')
+                body = body.replace('奖', 'j').replace("抽", "c").replace("中","z").replace("恭","g").replace("喜","x")
                 id = re.findall(r"私信你(.*?)说", body)[0][1:-1]
                 res = requests.get("https://space.bilibili.com/" + str(id) + "/")
                 name = re.findall(r"<title>(.*?)的个人空间_哔哩哔哩_Bilibili", res.text)[0]
                 try:
                     qq = curd.get_user_by_name(db, "DedeUserID="+str(id)).email
                     data = {
-                        'user_id': qq,
-                        'message': "你的账号  昵称：{}  uid：{}\n".format(name, id)+body
+                        'group_id': group_id,
+                        'message': "@"+ str(qq)+" 账号  昵称：{}  uid：{}可能zhong了\n".format(name, id)+body#"请检查该账号的@与私信"
                     }
-                    requests.post(qqurl+'send_private_msg', data)
+                    requests.post(qqurl+'send_group_msg', data)
                     imbox.delete(uid)
+                    time.sleep(random.uniform(2.1,5.1))
                 except:
                     data = {
-                        'user_id': zqq,
+                        'group_id': group_id,
                         'message': '账号id{}，昵称{}推送失败'.format(id, name)
                     }
-                    requests.post(qqurl+'send_private_msg', data)
+                    requests.post(qqurl+'send_group_msg', data)
                     imbox.delete(uid)
-            else:
+                    time.sleep(random.uniform(2.1,5.1))
+            elif message.body['plain'][0][:4] == "COOK":
+                body = message.body['plain'][0]
+                data = {
+                        'group_id': group_id,
+                        'message': "@"+ str(qq) +" "+body.replace("失效", "sx")
+                    }
+                requests.post(qqurl+'send_group_msg', data)
                 imbox.delete(uid)
+                time.sleep(random.uniform(2.1,5.1))
+            else:
+                pass
+                #imbox.delete(uid)
+
 
 @application.get("/push_msg/")
 def push_msg(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    background_tasks.add_task(imbox_push, db)
+    background_tasks.add_task(push_msg_QQ, db)
     return "发送完毕"
-
-'''
-@application.get("/get_u/", response_model=schemas.Readuser)
-def text(db: Session = Depends(get_db)): # 通过DedeUserID查找用户
-    db_user = curd.get_user_by_name(db, DedeUserID="DedeUserID=11573578")
-    text = {
-        "DedeUserID": "DedeUserID=11573578",
-        "SESSDATA": "xxxxxx",
-        "bili_jct": "xxxxxxxxxx",
-        # "email": "string"
-    }
-    if (db_user != None):
-        curd.change_user_by_code(db=db, user=text)
-    else:
-        curd.create_user_by_code(db=db, user=text)
-    return db_user
-
-'''
-
-
-#
-#git add -A
-#git commit -m "xxxx"
-#git push -f origin master
-
