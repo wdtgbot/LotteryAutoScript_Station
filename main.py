@@ -330,24 +330,42 @@ def check_users(admin: str, background_tasks: BackgroundTasks, db: Session = Dep
 def push_msg_QQ(db):
     with Imbox(imap_url, zzemail, zzemail_password, ssl=True) as imbox:
         # 获取全部邮件
-        inbox_message_after = imbox.messages(date__on=datetime.date.today())
+        inbox_message_after = imbox.messages()
         for uid, message in inbox_message_after:
-            if message.body['plain'][0][:4] == "## 私":
+            if message.body['plain'][0][:4] == "## 私" or message.body['plain'][0][:4] ==  "## [":
                 body = message.body['plain'][0]
                 body = body.replace("   ", '\n')
                 body = body.replace('{ "content": "', '\n').replace(' {"content":"', '\n')
                 body = body.replace(' "}', '\n').replace('" }', '\n')
                 body = body.replace('奖', 'j').replace("抽", "c").replace("中","z").replace("恭","g").replace("喜","x")
-                id = re.findall(r"私信你(.*?)说", body)[0][1:-1]
+                try:
+                    id = re.findall(r"私信你(.*?)说", body)[0][1:-1]
+                except:
+                    id = re.findall(r"了你\((.*?)\)", body)[0]
                 res = requests.get("https://space.bilibili.com/" + str(id) + "/")
                 name = re.findall(r"<title>(.*?)的个人空间_哔哩哔哩_Bilibili", res.text)[0]
                 try:
                     qq = curd.get_user_by_name(db, "DedeUserID="+str(id)).email
+                    headers = {'Content-Type': 'application/json'}
                     data = {
                         'group_id': group_id,
-                        'message': "@"+ str(qq)+" 账号  昵称：{}  uid：{}可能zhong了\n".format(name, id)+body#"请检查该账号的@与私信"
+                        'message': [
+                            {
+                                "type": "at",
+                                "data": {
+                                    "qq": qq,
+                                    "name": zqq          
+                                    }
+                            },
+                            {
+                                "type" : "text",
+                                "data": {
+                                    "text": " 账号  昵称：{}  uid：{}可能zhong了\n".format(name, id)+body
+                                    }
+                            }        
+                        ]
                     }
-                    requests.post(qqurl+'send_group_msg', data)
+                    requests.post(qqurl+'send_group_msg', headers=headers, json=data)
                     imbox.delete(uid)
                     time.sleep(random.uniform(2.1,5.1))
                 except:
@@ -370,7 +388,6 @@ def push_msg_QQ(db):
             else:
                 pass
                 #imbox.delete(uid)
-
 
 @application.get("/push_msg/")
 def push_msg(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
