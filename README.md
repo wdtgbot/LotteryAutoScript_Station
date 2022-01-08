@@ -1,3 +1,5 @@
+![fastapi - 0.68.1](https://img.shields.io/static/v1?label=fastapi&message=0.68.1&color=success&logo=fastapi)
+
 # B站抽奖站点
 
 本站点前后端由 [spiritlhl](https://github.com/spiritLHL) 开发
